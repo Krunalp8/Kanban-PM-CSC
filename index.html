@@ -9,14 +9,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --bg:#08101A;--s1:#0D1B2A;--s2:#122035;
-  --b1:#1E3352;--b2:#274060;
-  --t1:#E2EDF8;--t2:#8BACC8;--t3:#4A6A88;
-  --font:'Syne',sans-serif;--mono:'DM Mono',monospace
-}
+:root{--bg:#08101A;--s1:#0D1B2A;--s2:#122035;--b1:#1E3352;--b2:#274060;--t1:#E2EDF8;--t2:#8BACC8;--t3:#4A6A88;--font:'Syne',sans-serif;--mono:'DM Mono',monospace}
 body{background:var(--bg);color:var(--t1);font-family:var(--font);height:100vh;overflow:hidden}
-/* ── SETUP ── */
 #setup{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px}
 .sc{background:var(--s1);border:1px solid var(--b2);border-radius:20px;padding:32px;width:580px;max-width:100%}
 .sc h1{font-size:20px;font-weight:800;margin-bottom:8px}
@@ -38,11 +32,10 @@ hr{border:none;border-top:1px solid var(--b1);margin:18px 0}
 #connectBtn:disabled{background:#1e3a5f;color:#4A6A88;cursor:not-allowed}
 #errMsg{display:none;font-size:12px;color:#F87171;margin-top:9px;padding:8px 12px;background:rgba(239,68,68,.08);border-radius:7px;border:1px solid rgba(239,68,68,.2)}
 .tipbox{margin-top:12px;padding:10px 14px;background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.2);border-radius:9px;font-size:12px;color:#6EE7B7}
-/* ── BOARD ── */
 #board-wrap{display:none;flex-direction:column;height:100vh}
 header{display:flex;align-items:center;gap:14px;padding:14px 20px;background:var(--s1);border-bottom:1px solid var(--b1);flex-shrink:0}
 .logo{width:32px;height:32px;background:linear-gradient(135deg,#3B82F6,#8B5CF6);border-radius:9px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;color:#fff;flex-shrink:0}
-#boardTitle{font-size:17px;font-weight:800;cursor:pointer}.#boardTitle:hover{opacity:.7}
+#boardTitle{font-size:17px;font-weight:800;cursor:pointer}
 .hdr-r{margin-left:auto;display:flex;gap:8px;align-items:center}
 .pill{display:flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;background:var(--s2);border:1px solid var(--b1);font-size:10px;font-weight:700;font-family:var(--mono);color:var(--t3)}
 .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;background:#FCD34D}
@@ -85,11 +78,9 @@ header{display:flex;align-items:center;gap:14px;padding:14px 20px;background:var
 .inp:focus{border-color:#3B82F6}.inp::placeholder{color:var(--t3)}
 .add-col-btn{width:274px;flex-shrink:0;padding:14px;background:transparent;border:2px dashed var(--b2);border-radius:13px;color:var(--t3);cursor:pointer;font-family:var(--font);font-size:13px;font-weight:700;transition:all .15s}
 .add-col-btn:hover{border-color:#3B82F6;color:#60A5FA;background:rgba(59,130,246,.05)}
-/* Panel */
 #peoplePanel{display:none;position:fixed;top:65px;right:0;width:290px;height:calc(100vh - 65px);background:var(--s1);border-left:1px solid var(--b2);z-index:100;padding:18px;overflow-y:auto;box-shadow:-10px 0 30px rgba(0,0,0,.5)}
 #peoplePanel h3{font-size:14px;font-weight:800;margin-bottom:14px}
 .prow{display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:1px solid var(--b1)}
-/* Modal */
 #modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:200;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(3px)}
 #modal.open{display:flex}
 .mbox{background:var(--s1);border:1px solid var(--b2);border-radius:16px;padding:22px;width:460px;max-width:100%;max-height:88vh;overflow-y:auto}
@@ -97,7 +88,7 @@ header{display:flex;align-items:center;gap:14px;padding:14px 20px;background:var
 .frow{margin-bottom:13px}
 .lbl{font-size:10px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.9px;margin-bottom:5px;display:block;font-family:var(--mono)}
 .sel{background:var(--bg);border:1px solid var(--b2);color:var(--t1);padding:7px 10px;border-radius:7px;font-family:var(--font);font-size:12.5px;outline:none;width:100%}
-.sel:focus{border-color:#3B82F6} .sel option{background:#0D1B2A}
+.sel:focus{border-color:#3B82F6}.sel option{background:#0D1B2A}
 .chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:2px}
 .chip{display:flex;align-items:center;gap:5px;padding:5px 10px 5px 7px;border-radius:20px;border:2px solid transparent;cursor:pointer;font-size:11.5px;font-weight:700;background:var(--s2);color:var(--t2)}
 .chip.on{border-color:currentColor;color:var(--t1)}
@@ -108,7 +99,6 @@ header{display:flex;align-items:center;gap:14px;padding:14px 20px;background:var
 </head>
 <body>
 
-<!-- SETUP SCREEN -->
 <div id="setup">
   <div class="sc">
     <h1>🔥 One-time Firebase Setup</h1>
@@ -117,7 +107,7 @@ header{display:flex;align-items:center;gap:14px;padding:14px 20px;background:var
       <div class="step"><div class="sn">1</div><div class="sb"><b>Create a free Firebase project</b>Go to <a href="https://console.firebase.google.com" target="_blank">console.firebase.google.com</a> → "Add project" → name it → click through.</div></div>
       <div class="step"><div class="sn">2</div><div class="sb"><b>Enable Realtime Database</b>Build → Realtime Database → Create database → any location → <b>Start in test mode</b> → Enable.</div></div>
       <div class="step"><div class="sn">3</div><div class="sb"><b>Copy your config</b>⚙️ gear → Project Settings → scroll to "Your apps" → <code>&lt;/&gt;</code> web icon → Register app → copy the <code>firebaseConfig</code> block.</div></div>
-      <div class="step"><div class="sn">4</div><div class="sb"><b>Paste it below and click Connect</b>Config saves in your browser — no file editing ever needed.</div></div>
+      <div class="step"><div class="sn">4</div><div class="sb"><b>Paste it below and click Connect</b>Config saves in your browser — no file editing needed.</div></div>
     </div>
     <hr>
     <div class="plabel">Paste your Firebase config here</div>
@@ -129,7 +119,6 @@ header{display:flex;align-items:center;gap:14px;padding:14px 20px;background:var
   </div>
 </div>
 
-<!-- BOARD -->
 <div id="board-wrap">
   <header>
     <div class="logo">K</div>
@@ -145,7 +134,6 @@ header{display:flex;align-items:center;gap:14px;padding:14px 20px;background:var
   <div id="columns"></div>
 </div>
 
-<!-- PEOPLE PANEL -->
 <div id="peoplePanel">
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
     <h3>Team Members</h3>
@@ -161,7 +149,6 @@ header{display:flex;align-items:center;gap:14px;padding:14px 20px;background:var
   </div>
 </div>
 
-<!-- EDIT TASK MODAL -->
 <div id="modal" onclick="closeModal(event)">
   <div class="mbox" onclick="event.stopPropagation()">
     <h2>Edit Task</h2>
@@ -169,19 +156,15 @@ header{display:flex;align-items:center;gap:14px;padding:14px 20px;background:var
     <div class="g2">
       <div class="frow"><label class="lbl">Status</label>
         <select class="sel" id="mStatus">
-          <option value="todo">To Do</option>
-          <option value="inprogress">In Progress</option>
-          <option value="blocked">Blocked</option>
-          <option value="waiting">Waiting</option>
+          <option value="todo">To Do</option><option value="inprogress">In Progress</option>
+          <option value="blocked">Blocked</option><option value="waiting">Waiting</option>
           <option value="done">Done</option>
         </select>
       </div>
       <div class="frow"><label class="lbl">Priority</label>
         <select class="sel" id="mPriority">
-          <option value="low">Low</option>
-          <option value="medium">Medium</option>
-          <option value="high">High</option>
-          <option value="urgent">Urgent</option>
+          <option value="low">Low</option><option value="medium">Medium</option>
+          <option value="high">High</option><option value="urgent">Urgent</option>
         </select>
       </div>
     </div>
@@ -195,53 +178,79 @@ header{display:flex;align-items:center;gap:14px;padding:14px 20px;background:var
 </div>
 
 <script>
-// ── Constants ──────────────────────────────────────────
+/*
+  KEY DESIGN DECISION:
+  Firebase converts JS arrays to objects {0:{...}, 1:{...}} which breaks .map/.filter.
+  Solution: store columns and tasks as OBJECTS keyed by their ID, plus a separate
+  "order" array for display order. This is the Firebase-recommended pattern.
+  All reads/writes use this structure. The UI always converts to arrays for rendering.
+*/
+
 const ACCENT  = ["#FF6B6B","#4ECDC4","#F59E0B","#6366F1","#10B981","#F43F5E","#3B82F6","#8B5CF6","#EC4899","#14B8A6"];
 const PALETTE = ["#FF6B6B","#4ECDC4","#F59E0B","#6366F1","#10B981","#F43F5E","#3B82F6","#8B5CF6","#EC4899","#14B8A6","#F97316","#06B6D4"];
 const STATUS_META = {
-  todo:       {label:"To Do",       bg:"#64748B22",color:"#94A3B8"},
-  inprogress: {label:"In Progress", bg:"#3B82F622",color:"#60A5FA"},
-  blocked:    {label:"Blocked",     bg:"#EF444422",color:"#F87171"},
-  waiting:    {label:"Waiting",     bg:"#F59E0B22",color:"#FCD34D"},
-  done:       {label:"Done",        bg:"#10B98122",color:"#34D399"},
+  todo:{label:"To Do",bg:"#64748B22",color:"#94A3B8"},
+  inprogress:{label:"In Progress",bg:"#3B82F622",color:"#60A5FA"},
+  blocked:{label:"Blocked",bg:"#EF444422",color:"#F87171"},
+  waiting:{label:"Waiting",bg:"#F59E0B22",color:"#FCD34D"},
+  done:{label:"Done",bg:"#10B98122",color:"#34D399"}
 };
 const PRI_META = {
-  low:    {label:"Low",   bg:"#64748B22",color:"#94A3B8"},
-  medium: {label:"Med",   bg:"#3B82F622",color:"#60A5FA"},
-  high:   {label:"High",  bg:"#F59E0B22",color:"#FCD34D"},
-  urgent: {label:"Urgent",bg:"#EF444422",color:"#F87171"},
+  low:{label:"Low",bg:"#64748B22",color:"#94A3B8"},
+  medium:{label:"Med",bg:"#3B82F622",color:"#60A5FA"},
+  high:{label:"High",bg:"#F59E0B22",color:"#FCD34D"},
+  urgent:{label:"Urgent",bg:"#EF444422",color:"#F87171"}
 };
 
-const CFG_KEY  = "hra-cfg4";
-const DATA_KEY = "hra-data4";
+const CFG_KEY = "hra-cfg5";
+let db = null;
+let board = null; // live state
+let editingTask = null;
+let dragColId = null, dragTaskId = null;
+
 const uid = () => Math.random().toString(36).slice(2,10);
-
-// ── State ──────────────────────────────────────────────
-let board = null;
-let db    = null;
-let skip  = false;
-let editingTask = null; // {colId, taskId}
-
-const INIT_BOARD = {
-  boardName:"HRA Project Board", people:[],
-  columns:[
-    {id:uid(),title:"DRNX",       accent:ACCENT[0],tasks:[{id:uid(),text:"Check Invoice balance from HRA Accounting",assignees:[],status:"inprogress",priority:"high",notes:""},{id:uid(),text:"Ensure DRNX pays",assignees:[],status:"waiting",priority:"urgent",notes:""}]},
-    {id:uid(),title:"S2B",        accent:ACCENT[3],tasks:[{id:uid(),text:"Figure out amount, lets say 5%",assignees:[],status:"todo",priority:"medium",notes:""}]},
-    {id:uid(),title:"RAB",        accent:ACCENT[5],tasks:[{id:uid(),text:"Do we need to have another communication effort?",assignees:[],status:"waiting",priority:"medium",notes:""}]},
-    {id:uid(),title:"Zambos",     accent:ACCENT[1],tasks:[{id:uid(),text:"We need to get Odoo system running",assignees:[],status:"inprogress",priority:"high",notes:""},{id:uid(),text:"We need to get Distro agreement",assignees:[],status:"todo",priority:"high",notes:""},{id:uid(),text:"Then distro agreement to Parras",assignees:[],status:"todo",priority:"medium",notes:""}]},
-    {id:uid(),title:"Uncle Julio",accent:ACCENT[2],tasks:[]},
-    {id:uid(),title:"Sabritas",   accent:ACCENT[6],tasks:[]},
-    {id:uid(),title:"Jumex",      accent:ACCENT[7],tasks:[]},
-    {id:uid(),title:"Mazuma",     accent:ACCENT[4],tasks:[]},
-  ]
-};
-
-// ── localStorage helpers ───────────────────────────────
 function lsGet(k){try{const v=localStorage.getItem(k);return v?JSON.parse(v):null;}catch{return null;}}
 function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch{}}
 function lsDel(k){try{localStorage.removeItem(k);}catch{}}
+function esc(s){return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
 
-// ── Parse firebaseConfig ───────────────────────────────
+// ── Build fresh board (Firebase-safe: no top-level arrays) ──
+function makeInitBoard(){
+  const cols = {};
+  const colOrder = [];
+  const data = [
+    {title:"DRNX",accent:ACCENT[0],tasks:[
+      {text:"Check Invoice balance from HRA Accounting",status:"inprogress",priority:"high"},
+      {text:"Ensure DRNX pays",status:"waiting",priority:"urgent"}
+    ]},
+    {title:"S2B",accent:ACCENT[3],tasks:[{text:"Figure out amount, lets say 5%",status:"todo",priority:"medium"}]},
+    {title:"RAB",accent:ACCENT[5],tasks:[{text:"Do we need to have another communication effort?",status:"waiting",priority:"medium"}]},
+    {title:"Zambos",accent:ACCENT[1],tasks:[
+      {text:"We need to get Odoo system running",status:"inprogress",priority:"high"},
+      {text:"We need to get Distro agreement",status:"todo",priority:"high"},
+      {text:"Then distro agreement to Parras",status:"todo",priority:"medium"}
+    ]},
+    {title:"Uncle Julio",accent:ACCENT[2],tasks:[]},
+    {title:"Sabritas",accent:ACCENT[6],tasks:[]},
+    {title:"Jumex",accent:ACCENT[7],tasks:[]},
+    {title:"Mazuma",accent:ACCENT[4],tasks:[]},
+  ];
+  data.forEach(d=>{
+    const cid = uid();
+    colOrder.push(cid);
+    const taskOrder = [];
+    const tasks = {};
+    d.tasks.forEach(t=>{
+      const tid = uid();
+      taskOrder.push(tid);
+      tasks[tid] = {id:tid,text:t.text,status:t.status,priority:t.priority,notes:"",assignees:{}};
+    });
+    cols[cid] = {id:cid,title:d.title,accent:d.accent,tasks,taskOrder};
+  });
+  return {boardName:"HRA Project Board",people:{},peopleOrder:[],cols,colOrder};
+}
+
+// ── Parse pasted Firebase config ──
 function parseCfg(raw){
   const out={};
   ["apiKey","authDomain","databaseURL","projectId","storageBucket","messagingSenderId","appId"].forEach(k=>{
@@ -251,17 +260,16 @@ function parseCfg(raw){
   return out;
 }
 
-// ── Connect button ─────────────────────────────────────
+// ── Connect ──
 function doConnect(){
-  const raw = document.getElementById("cfgPaste").value.trim();
-  const err = document.getElementById("errMsg");
-  err.style.display="none";
+  const raw=document.getElementById("cfgPaste").value.trim();
+  document.getElementById("errMsg").style.display="none";
   if(!raw){showErr("Please paste your Firebase config first.");return;}
-  const cfg = parseCfg(raw);
+  const cfg=parseCfg(raw);
   if(!cfg.apiKey){showErr("Could not find apiKey — paste the full firebaseConfig block.");return;}
-  if(!cfg.databaseURL){showErr("Could not find databaseURL — it looks like: https://your-project-default-rtdb.firebaseio.com");return;}
-  document.getElementById("connectBtn").disabled=true;
-  document.getElementById("connectBtn").textContent="Connecting…";
+  if(!cfg.databaseURL){showErr("Could not find databaseURL — looks like: https://xxx-default-rtdb.firebaseio.com");return;}
+  const btn=document.getElementById("connectBtn");
+  btn.disabled=true;btn.textContent="Connecting…";
   try{
     if(firebase.apps.length)firebase.apps.forEach(a=>{try{a.delete();}catch{}});
     firebase.initializeApp(cfg);
@@ -270,124 +278,130 @@ function doConnect(){
     startBoard();
   }catch(e){
     showErr("Firebase error: "+e.message);
-    document.getElementById("connectBtn").disabled=false;
-    document.getElementById("connectBtn").textContent="Connect & Open Board →";
+    btn.disabled=false;btn.textContent="Connect & Open Board →";
   }
 }
+function showErr(msg){const el=document.getElementById("errMsg");el.textContent="⚠️ "+msg;el.style.display="block";}
+function reconnect(){if(confirm("Reset connection?")){lsDel(CFG_KEY);location.reload();}}
 
-function showErr(msg){
-  const el=document.getElementById("errMsg");
-  el.textContent="⚠️ "+msg;
-  el.style.display="block";
-}
-
-function reconnect(){
-  if(confirm("Reset connection? You will need to paste your config again.")){lsDel(CFG_KEY);location.reload();}
-}
-
-// ── Start board ────────────────────────────────────────
+// ── Start board ──
 function startBoard(){
   document.getElementById("setup").style.display="none";
   document.getElementById("board-wrap").style.display="flex";
 
-  // Load local data immediately so board never looks blank
-  board = lsGet(DATA_KEY) || INIT_BOARD;
-  render();
-
-  // Then connect to Firebase — first do a one-time read, then listen for changes
-  const ref = db.ref("board");
-
-  // One-time immediate read to get current data
-  ref.once("value").then(snap=>{
+  db.ref("board").once("value").then(snap=>{
     const d=snap.val();
     if(d){
       board=d;
-      lsSet(DATA_KEY,d);
-      render();
+      // Ensure colOrder exists (backward compat)
+      if(!board.colOrder) board.colOrder = Object.keys(board.cols||{});
+      if(!board.people)   board.people = {};
+      if(!board.peopleOrder) board.peopleOrder = Object.keys(board.people);
+      // Ensure each col has taskOrder
+      Object.keys(board.cols||{}).forEach(cid=>{
+        const col=board.cols[cid];
+        if(!col.taskOrder) col.taskOrder = Object.keys(col.tasks||{});
+        if(!col.tasks) col.tasks = {};
+      });
     } else {
-      ref.set(board);
+      board = makeInitBoard();
+      db.ref("board").set(board);
     }
+    render();
     setSyncStatus("live");
 
-    // Now subscribe to live changes
-    ref.on("value", snap2=>{
-      if(skip){skip=false;return;}
+    // Live listener for changes from other users
+    db.ref("board").on("value",snap2=>{
       const d2=snap2.val();
-      if(d2){
-        board=d2;
-        lsSet(DATA_KEY,d2);
-        render();
-      }
-    }, ()=>setSyncStatus("off"));
+      if(!d2)return;
+      board=d2;
+      if(!board.colOrder) board.colOrder=Object.keys(board.cols||{});
+      if(!board.people)   board.people={};
+      if(!board.peopleOrder) board.peopleOrder=Object.keys(board.people);
+      Object.keys(board.cols||{}).forEach(cid=>{
+        const col=board.cols[cid];
+        if(!col.taskOrder) col.taskOrder=Object.keys(col.tasks||{});
+        if(!col.tasks) col.tasks={};
+      });
+      render();
+    },()=>setSyncStatus("off"));
 
-  }).catch(()=>{
+  }).catch(e=>{
+    showErr("Could not read from Firebase: "+e.message);
     setSyncStatus("off");
   });
 }
 
 function setSyncStatus(s){
-  const dot=document.getElementById("syncDot");
-  const lbl=document.getElementById("syncLbl");
-  dot.className="dot"+(s==="live"?" live":s==="off"?" off":"");
-  lbl.textContent=s==="live"?"live sync":s==="off"?"offline":"syncing…";
+  document.getElementById("syncDot").className="dot"+(s==="live"?" live":s==="off"?" off":"");
+  document.getElementById("syncLbl").textContent=s==="live"?"live sync":s==="off"?"offline":"syncing…";
 }
 
-// ── Write to Firebase ──────────────────────────────────
-function pushBoard(){
-  lsSet(DATA_KEY,board);
-  if(db){skip=true;db.ref("board").set(board).catch(()=>{skip=false;});}
+// ── Push just one path to Firebase ──
+function push(path,val){
+  if(db) db.ref(path).set(val).catch(e=>console.error("Write failed:",e));
 }
 
-// ── Drag state ─────────────────────────────────────────
-let dragColId=null, dragTaskId=null;
-
-// ── RENDER ─────────────────────────────────────────────
+// ── Render ──
 function render(){
   if(!board)return;
-  // Title
   document.getElementById("boardTitle").textContent=board.boardName||"HRA Project Board";
+
   // Avatar stack
-  const avs=document.getElementById("avStack");
-  avs.innerHTML=board.people.slice(0,6).map(p=>`<div class="av" style="background:${p.color}" title="${esc(p.name)}">${esc(p.name[0].toUpperCase())}</div>`).join("");
-  // People panel
+  const po=board.peopleOrder||[];
+  document.getElementById("avStack").innerHTML=po.slice(0,6).map(pid=>{
+    const p=(board.people||{})[pid];
+    if(!p)return"";
+    return`<div class="av" style="background:${p.color}" title="${esc(p.name)}">${esc(p.name[0].toUpperCase())}</div>`;
+  }).join("");
+
   renderPeople();
+
   // Columns
   const wrap=document.getElementById("columns");
   wrap.innerHTML="";
-  board.columns.forEach(col=>{
+  const co=board.colOrder||[];
+  co.forEach(cid=>{
+    const col=(board.cols||{})[cid];
+    if(!col)return;
+    const to=col.taskOrder||[];
+    const tasksHtml=to.map(tid=>{
+      const t=(col.tasks||{})[tid];
+      if(!t)return"";
+      return cardHTML(t,cid);
+    }).join("");
+
     const colEl=document.createElement("div");
     colEl.className="col";
-    colEl.dataset.colId=col.id;
+    colEl.dataset.colId=cid;
     colEl.innerHTML=`
       <div class="col-top">
-        <div class="col-bar" style="background:${col.accent}"></div>
+        <div class="col-bar" style="background:${col.accent||'#3B82F6'}"></div>
         <div class="col-head">
           <div class="col-ttl">${esc(col.title)}</div>
-          <div class="col-cnt">${col.tasks.length}</div>
-          <button class="xbtn" onclick="delColumn('${col.id}')">×</button>
+          <div class="col-cnt">${to.length}</div>
+          <button class="xbtn" onclick="delColumn('${cid}')">×</button>
         </div>
       </div>
-      <div class="task-list" id="tl-${col.id}">
-        ${col.tasks.map(t=>cardHTML(t,col.id)).join("")}
-      </div>
-      <div class="col-foot" id="foot-${col.id}">
-        <button class="btn bg" style="width:100%;justify-content:center;font-size:11px;padding:5px 10px" onclick="showAddTask('${col.id}')">+ Add task</button>
+      <div class="task-list">${tasksHtml}</div>
+      <div class="col-foot" id="foot-${cid}">
+        <button class="btn bg" style="width:100%;justify-content:center;font-size:11px;padding:5px 10px" onclick="showAddTask('${cid}')">+ Add task</button>
       </div>`;
-    // Drop zone
     colEl.addEventListener("dragover",e=>{e.preventDefault();colEl.classList.add("over");});
     colEl.addEventListener("dragleave",e=>{if(!colEl.contains(e.relatedTarget))colEl.classList.remove("over");});
-    colEl.addEventListener("drop",e=>{e.preventDefault();colEl.classList.remove("over");dropTask(col.id);});
+    colEl.addEventListener("drop",e=>{e.preventDefault();colEl.classList.remove("over");dropTask(cid);});
     wrap.appendChild(colEl);
-    // Attach drag listeners to cards
-    col.tasks.forEach(t=>{
-      const card=document.getElementById("card-"+t.id);
+
+    // Drag listeners
+    to.forEach(tid=>{
+      const card=document.getElementById("card-"+tid);
       if(card){
-        card.addEventListener("dragstart",()=>{dragColId=col.id;dragTaskId=t.id;card.classList.add("dragging");});
+        card.addEventListener("dragstart",()=>{dragColId=cid;dragTaskId=tid;card.classList.add("dragging");});
         card.addEventListener("dragend",()=>{card.classList.remove("dragging");dragColId=null;dragTaskId=null;});
       }
     });
   });
-  // Add column button
+
   const addBtn=document.createElement("button");
   addBtn.className="add-col-btn";
   addBtn.textContent="+ Add column";
@@ -398,93 +412,116 @@ function render(){
 function cardHTML(t,colId){
   const st=STATUS_META[t.status]||STATUS_META.todo;
   const pr=PRI_META[t.priority]||PRI_META.medium;
-  const avHtml=(t.assignees||[]).map(aid=>{
-    const p=(board.people||[]).find(x=>x.id===aid);
+  const assignees=t.assignees?Object.keys(t.assignees):[];
+  const avHtml=assignees.map(pid=>{
+    const p=(board.people||{})[pid];
     return p?`<div class="mav" style="background:${p.color}" title="${esc(p.name)}">${esc(p.name[0].toUpperCase())}</div>`:"";
   }).join("");
   const notesHtml=t.notes?`<div class="cnotes">${esc(t.notes)}</div>`:"";
-  return `
-    <div class="card" id="card-${t.id}" draggable="true">
-      <div class="card-acts">
-        <button class="ca" onclick="openEdit('${colId}','${t.id}')">✎</button>
-        <button class="ca del" onclick="delTask('${colId}','${t.id}')">×</button>
-      </div>
-      <div class="ctxt">${esc(t.text)}</div>
-      ${notesHtml}
-      <div class="cmeta">
-        <span class="badge" style="background:${st.bg};color:${st.color}">${st.label}</span>
-        <span class="badge" style="background:${pr.bg};color:${pr.color}">${pr.label}</span>
-        ${avHtml?`<div class="card-avs" style="margin-left:auto">${avHtml}</div>`:""}
-      </div>
-    </div>`;
+  return`<div class="card" id="card-${t.id}" draggable="true">
+    <div class="card-acts">
+      <button class="ca" onclick="openEdit('${colId}','${t.id}')">✎</button>
+      <button class="ca del" onclick="delTask('${colId}','${t.id}')">×</button>
+    </div>
+    <div class="ctxt">${esc(t.text)}</div>${notesHtml}
+    <div class="cmeta">
+      <span class="badge" style="background:${st.bg};color:${st.color}">${st.label}</span>
+      <span class="badge" style="background:${pr.bg};color:${pr.color}">${pr.label}</span>
+      ${avHtml?`<div class="card-avs" style="margin-left:auto">${avHtml}</div>`:""}
+    </div>
+  </div>`;
 }
 
-function esc(s){return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
-
-// ── Drag & Drop ────────────────────────────────────────
+// ── Drag & Drop ──
 function dropTask(toColId){
   if(!dragTaskId||dragColId===toColId)return;
-  let moved;
-  board.columns=board.columns.map(c=>{
-    if(c.id===dragColId){moved=c.tasks.find(t=>t.id===dragTaskId);return{...c,tasks:c.tasks.filter(t=>t.id!==dragTaskId)};}
-    return c;
-  }).map(c=>c.id===toColId&&moved?{...c,tasks:[...c.tasks,moved]}:c);
-  pushBoard();render();
+  const fromCol=board.cols[dragColId];
+  const toCol=board.cols[toColId];
+  if(!fromCol||!toCol)return;
+  const task=fromCol.tasks[dragTaskId];
+  if(!task)return;
+  // Remove from source
+  delete fromCol.tasks[dragTaskId];
+  fromCol.taskOrder=fromCol.taskOrder.filter(id=>id!==dragTaskId);
+  // Add to destination
+  toCol.tasks[dragTaskId]=task;
+  toCol.taskOrder.push(dragTaskId);
+  // Push only affected columns
+  push("board/cols/"+dragColId,fromCol);
+  push("board/cols/"+toColId,toCol);
+  render();
 }
 
-// ── Add Task ───────────────────────────────────────────
+// ── Add Task ──
 function showAddTask(colId){
   const foot=document.getElementById("foot-"+colId);
-  foot.innerHTML=`
-    <div style="display:flex;flex-direction:column;gap:7px">
-      <textarea class="inp" id="newTask-${colId}" rows="2" placeholder="Task description…" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();doAddTask('${colId}')}if(event.key==='Escape')cancelAdd('${colId}')"></textarea>
-      <div style="display:flex;gap:6px">
-        <button class="btn bp" style="flex:1;justify-content:center;font-size:11px;padding:5px 10px" onclick="doAddTask('${colId}')">Add Task</button>
-        <button class="btn bg" style="font-size:11px;padding:5px 10px" onclick="cancelAdd('${colId}')">✕</button>
-      </div>
-    </div>`;
-  setTimeout(()=>document.getElementById("newTask-"+colId)&&document.getElementById("newTask-"+colId).focus(),50);
+  foot.innerHTML=`<div style="display:flex;flex-direction:column;gap:7px">
+    <textarea class="inp" id="nt-${colId}" rows="2" placeholder="Task description…"
+      onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();doAddTask('${colId}')}if(event.key==='Escape')cancelAdd('${colId}')"></textarea>
+    <div style="display:flex;gap:6px">
+      <button class="btn bp" style="flex:1;justify-content:center;font-size:11px;padding:5px 10px" onclick="doAddTask('${colId}')">Add Task</button>
+      <button class="btn bg" style="font-size:11px;padding:5px 10px" onclick="cancelAdd('${colId}')">✕</button>
+    </div></div>`;
+  setTimeout(()=>{const el=document.getElementById("nt-"+colId);if(el)el.focus();},50);
 }
 function doAddTask(colId){
-  const el=document.getElementById("newTask-"+colId);
+  const el=document.getElementById("nt-"+colId);
   if(!el||!el.value.trim())return;
-  const t={id:uid(),text:el.value.trim(),assignees:[],status:"todo",priority:"medium",notes:""};
-  board.columns=board.columns.map(c=>c.id===colId?{...c,tasks:[...c.tasks,t]}:c);
-  pushBoard();render();
+  const tid=uid();
+  const task={id:tid,text:el.value.trim(),status:"todo",priority:"medium",notes:"",assignees:{}};
+  if(!board.cols[colId].tasks) board.cols[colId].tasks={};
+  if(!board.cols[colId].taskOrder) board.cols[colId].taskOrder=[];
+  board.cols[colId].tasks[tid]=task;
+  board.cols[colId].taskOrder.push(tid);
+  // Push just this column
+  push("board/cols/"+colId, board.cols[colId]);
+  render();
 }
 function cancelAdd(colId){
   const foot=document.getElementById("foot-"+colId);
   if(foot)foot.innerHTML=`<button class="btn bg" style="width:100%;justify-content:center;font-size:11px;padding:5px 10px" onclick="showAddTask('${colId}')">+ Add task</button>`;
 }
 
-// ── Delete Task ────────────────────────────────────────
+// ── Delete Task ──
 function delTask(colId,taskId){
-  board.columns=board.columns.map(c=>c.id===colId?{...c,tasks:c.tasks.filter(t=>t.id!==taskId)}:c);
-  pushBoard();render();
+  if(!board.cols[colId])return;
+  delete board.cols[colId].tasks[taskId];
+  board.cols[colId].taskOrder=board.cols[colId].taskOrder.filter(id=>id!==taskId);
+  push("board/cols/"+colId, board.cols[colId]);
+  render();
 }
 
-// ── Add Column ─────────────────────────────────────────
+// ── Add Column ──
 function addColumn(){
   const name=prompt("Column name:");
   if(!name||!name.trim())return;
-  board.columns.push({id:uid(),title:name.trim(),accent:ACCENT[~~(Math.random()*ACCENT.length)],tasks:[]});
-  pushBoard();render();
+  const cid=uid();
+  if(!board.cols) board.cols={};
+  if(!board.colOrder) board.colOrder=[];
+  board.cols[cid]={id:cid,title:name.trim(),accent:ACCENT[~~(Math.random()*ACCENT.length)],tasks:{},taskOrder:[]};
+  board.colOrder.push(cid);
+  push("board/cols/"+cid, board.cols[cid]);
+  push("board/colOrder", board.colOrder);
+  render();
 }
 
-// ── Delete Column ──────────────────────────────────────
+// ── Delete Column ──
 function delColumn(colId){
   if(!confirm("Delete this column and all its tasks?"))return;
-  board.columns=board.columns.filter(c=>c.id!==colId);
-  pushBoard();render();
+  delete board.cols[colId];
+  board.colOrder=board.colOrder.filter(id=>id!==colId);
+  push("board/cols/"+colId, null);
+  push("board/colOrder", board.colOrder);
+  render();
 }
 
-// ── Edit Title ─────────────────────────────────────────
+// ── Edit Title ──
 function editTitle(){
   const n=prompt("Board name:",board.boardName);
-  if(n&&n.trim()){board.boardName=n.trim();pushBoard();render();}
+  if(n&&n.trim()){board.boardName=n.trim();push("board/boardName",board.boardName);render();}
 }
 
-// ── People ─────────────────────────────────────────────
+// ── People ──
 function togglePeople(){
   const p=document.getElementById("peoplePanel");
   p.style.display=p.style.display==="block"?"none":"block";
@@ -492,78 +529,95 @@ function togglePeople(){
 function renderPeople(){
   const list=document.getElementById("peopleList");
   if(!list)return;
-  if(!board.people.length){list.innerHTML='<p style="font-size:12px;color:var(--t3);margin-bottom:8px">No team members yet.</p>';return;}
-  list.innerHTML=board.people.map(p=>`
-    <div class="prow">
+  const po=board.peopleOrder||[];
+  if(!po.length){list.innerHTML='<p style="font-size:12px;color:var(--t3);margin-bottom:8px">No team members yet.</p>';return;}
+  list.innerHTML=po.map(pid=>{
+    const p=(board.people||{})[pid];
+    if(!p)return"";
+    return`<div class="prow">
       <div style="width:18px;height:18px;border-radius:50%;background:${p.color};flex-shrink:0"></div>
       <div class="av" style="background:${p.color};margin:0;width:25px;height:25px;font-size:9px">${esc(p.name[0].toUpperCase())}</div>
       <span style="font-size:13px;font-weight:700;flex:1">${esc(p.name)}</span>
-      <button class="btn" style="background:transparent;color:#F87171;border:none;padding:3px 7px;font-size:11px;font-weight:700" onclick="delPerson('${p.id}')">Remove</button>
-    </div>`).join("");
+      <button class="btn" style="background:transparent;color:#F87171;border:none;padding:3px 7px;font-size:11px;font-weight:700" onclick="delPerson('${pid}')">Remove</button>
+    </div>`;
+  }).join("");
 }
 function addPerson(){
   const inp=document.getElementById("newPersonInp");
   const name=inp.value.trim();
   if(!name)return;
-  const used=(board.people||[]).map(p=>p.color);
+  const used=Object.values(board.people||{}).map(p=>p.color);
   const avail=PALETTE.filter(c=>!used.includes(c));
-  const color=avail[0]||PALETTE[board.people.length%PALETTE.length];
-  if(!board.people)board.people=[];
-  board.people.push({id:uid(),name,color});
+  const color=avail[0]||PALETTE[Object.keys(board.people||{}).length%PALETTE.length];
+  const pid=uid();
+  if(!board.people) board.people={};
+  if(!board.peopleOrder) board.peopleOrder=[];
+  board.people[pid]={id:pid,name,color};
+  board.peopleOrder.push(pid);
   inp.value="";
-  pushBoard();render();
+  push("board/people/"+pid, board.people[pid]);
+  push("board/peopleOrder", board.peopleOrder);
+  render();
 }
 function delPerson(pid){
-  board.people=board.people.filter(p=>p.id!==pid);
-  board.columns=board.columns.map(c=>({...c,tasks:c.tasks.map(t=>({...t,assignees:(t.assignees||[]).filter(a=>a!==pid)}))}));
-  pushBoard();render();
+  delete board.people[pid];
+  board.peopleOrder=(board.peopleOrder||[]).filter(id=>id!==pid);
+  // Remove from all tasks
+  Object.keys(board.cols||{}).forEach(cid=>{
+    Object.keys(board.cols[cid].tasks||{}).forEach(tid=>{
+      if(board.cols[cid].tasks[tid].assignees)
+        delete board.cols[cid].tasks[tid].assignees[pid];
+    });
+  });
+  push("board/people/"+pid, null);
+  push("board/peopleOrder", board.peopleOrder);
+  push("board/cols", board.cols);
+  render();
 }
 
-// ── Edit Task Modal ────────────────────────────────────
+// ── Edit Task Modal ──
 function openEdit(colId,taskId){
-  const col=board.columns.find(c=>c.id===colId);
+  const col=(board.cols||{})[colId];
   if(!col)return;
-  const t=col.tasks.find(x=>x.id===taskId);
+  const t=(col.tasks||{})[taskId];
   if(!t)return;
   editingTask={colId,taskId};
   document.getElementById("mText").value=t.text||"";
   document.getElementById("mStatus").value=t.status||"todo";
   document.getElementById("mPriority").value=t.priority||"medium";
   document.getElementById("mNotes").value=t.notes||"";
-  // Chips
-  const chips=document.getElementById("mChips");
-  chips.innerHTML=(board.people||[]).map(p=>{
-    const on=(t.assignees||[]).includes(p.id);
-    return`<div class="chip${on?" on":""}" style="color:${p.color};border-color:${on?p.color:"transparent"}" onclick="togAssign('${p.id}')"><div class="chipdot" style="background:${p.color}"></div>${esc(p.name)}</div>`;
-  }).join("");
+  renderChips(t);
   document.getElementById("modal").classList.add("open");
 }
-function togAssign(pid){
-  const col=board.columns.find(c=>c.id===editingTask.colId);
-  if(!col)return;
-  const t=col.tasks.find(x=>x.id===editingTask.taskId);
-  if(!t)return;
-  if(!t.assignees)t.assignees=[];
-  if(t.assignees.includes(pid))t.assignees=t.assignees.filter(a=>a!==pid);
-  else t.assignees.push(pid);
-  // Re-render chips only
-  const chips=document.getElementById("mChips");
-  chips.innerHTML=(board.people||[]).map(p=>{
-    const on=(t.assignees||[]).includes(p.id);
-    return`<div class="chip${on?" on":""}" style="color:${p.color};border-color:${on?p.color:"transparent"}" onclick="togAssign('${p.id}')"><div class="chipdot" style="background:${p.color}"></div>${esc(p.name)}</div>`;
+function renderChips(t){
+  const po=board.peopleOrder||[];
+  document.getElementById("mChips").innerHTML=po.map(pid=>{
+    const p=(board.people||{})[pid];
+    if(!p)return"";
+    const on=t.assignees&&t.assignees[pid];
+    return`<div class="chip${on?" on":""}" style="color:${p.color};border-color:${on?p.color:"transparent"}" onclick="togAssign('${pid}')"><div class="chipdot" style="background:${p.color}"></div>${esc(p.name)}</div>`;
   }).join("");
 }
+function togAssign(pid){
+  if(!editingTask)return;
+  const t=board.cols[editingTask.colId].tasks[editingTask.taskId];
+  if(!t)return;
+  if(!t.assignees)t.assignees={};
+  if(t.assignees[pid]) delete t.assignees[pid];
+  else t.assignees[pid]=true;
+  renderChips(t);
+}
 function saveTask(){
-  const col=board.columns.find(c=>c.id===editingTask.colId);
-  if(!col)return;
-  const t=col.tasks.find(x=>x.id===editingTask.taskId);
+  if(!editingTask)return;
+  const t=board.cols[editingTask.colId].tasks[editingTask.taskId];
   if(!t)return;
   t.text    =document.getElementById("mText").value;
   t.status  =document.getElementById("mStatus").value;
   t.priority=document.getElementById("mPriority").value;
   t.notes   =document.getElementById("mNotes").value;
+  push("board/cols/"+editingTask.colId+"/tasks/"+editingTask.taskId, t);
   closeModal();
-  pushBoard();render();
+  render();
 }
 function closeModal(e){
   if(e&&e.target!==document.getElementById("modal"))return;
@@ -571,18 +625,16 @@ function closeModal(e){
   editingTask=null;
 }
 
-// ── Auto-connect if config already saved ──────────────
+// ── Auto-connect on reload ──
 (function init(){
   const cfg=lsGet(CFG_KEY);
-  if(!cfg){return;} // show setup screen
+  if(!cfg)return;
   try{
     if(firebase.apps.length)firebase.apps.forEach(a=>{try{a.delete();}catch{}});
     firebase.initializeApp(cfg);
     db=firebase.database();
     startBoard();
-  }catch(e){
-    lsDel(CFG_KEY); // bad config, show setup screen
-  }
+  }catch(e){lsDel(CFG_KEY);}
 })();
 </script>
 </body>
