@@ -7,14 +7,14 @@
 <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-:root{--bg:#08101A;--s1:#0D1B2A;--s2:#122035;--b1:#1E3352;--b2:#274060;--b3:#3A5A7C;--t1:#E2EDF8;--t2:#8BACC8;--t3:#4A6A88;--r:10px;--font:'Syne',sans-serif;--mono:'DM Mono',monospace}
+:root{--bg:#08101A;--s1:#0D1B2A;--s2:#122035;--b1:#1E3352;--b2:#274060;--t1:#E2EDF8;--t2:#8BACC8;--t3:#4A6A88;--r:10px;--font:'Syne',sans-serif;--mono:'DM Mono',monospace}
 html,body,#root{height:100%;background:var(--bg);color:var(--t1);font-family:var(--font)}
 .app{display:flex;flex-direction:column;height:100vh;overflow:hidden}
-
-/* Header */
 .hdr{display:flex;align-items:center;gap:14px;padding:16px 20px;background:var(--s1);border-bottom:1px solid var(--b1);flex-shrink:0;z-index:50}
 .logo{width:34px;height:34px;background:linear-gradient(135deg,#3B82F6,#8B5CF6);border-radius:9px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;color:#fff;flex-shrink:0}
 .bname{font-size:17px;font-weight:800;letter-spacing:-.5px;cursor:pointer;user-select:none}.bname:hover{opacity:.7}
@@ -26,25 +26,17 @@ html,body,#root{height:100%;background:var(--bg);color:var(--t1);font-family:var
 .sdot.loading{background:#FCD34D}.sdot.err{background:#F87171}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
 .slbl{font-size:10px;font-weight:700;font-family:var(--mono);color:var(--t3)}
-
-/* Buttons */
 .btn{display:flex;align-items:center;gap:5px;padding:7px 13px;border-radius:8px;border:none;cursor:pointer;font-family:var(--font);font-size:12px;font-weight:700;transition:all .13s}
 .btn-p{background:#3B82F6;color:#fff}.btn-p:hover{background:#2563EB}
 .btn-p:disabled{background:#1e3a5f;color:#4A6A88;cursor:not-allowed}
 .btn-g{background:transparent;color:var(--t2);border:1px solid var(--b2)}.btn-g:hover{background:var(--s2);color:var(--t1)}
 .btn-d{background:transparent;color:#F87171;border:none}.btn-d:hover{background:rgba(239,68,68,.12)}
 .sm{padding:5px 10px;font-size:11px}
-
-/* Avatars */
 .av-stack{display:flex}
 .av{width:27px;height:27px;border-radius:50%;border:2px solid var(--s1);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:#000;margin-left:-6px;cursor:pointer;transition:transform .1s;flex-shrink:0}
 .av:first-child{margin-left:0}.av:hover{transform:scale(1.15)}
-
-/* Board */
 .board{display:flex;gap:14px;padding:18px 20px 24px;overflow-x:auto;overflow-y:hidden;flex:1;align-items:flex-start}
 .board::-webkit-scrollbar{height:5px}.board::-webkit-scrollbar-thumb{background:var(--b2);border-radius:3px}
-
-/* Column */
 .col{width:276px;flex-shrink:0;background:var(--s1);border:1px solid var(--b1);border-radius:13px;display:flex;flex-direction:column;max-height:calc(100vh - 90px);transition:border-color .15s,box-shadow .15s}
 .col.over{border-color:#3B82F6;box-shadow:0 0 0 1px #3B82F6}
 .col-top{position:relative;padding:14px 13px 11px}
@@ -54,12 +46,8 @@ html,body,#root{height:100%;background:var(--bg);color:var(--t1);font-family:var
 .col-cnt{font-size:10px;color:var(--t3);background:var(--s2);padding:2px 7px;border-radius:10px;font-family:var(--mono)}
 .ico{width:22px;height:22px;border:none;background:transparent;color:var(--t3);cursor:pointer;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:15px;transition:all .1s}
 .ico:hover{background:var(--s2);color:var(--t2)}
-
-/* Tasks */
 .tasks{padding:8px;display:flex;flex-direction:column;gap:7px;flex:1;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--b1) transparent}
 .tasks::-webkit-scrollbar{width:3px}.tasks::-webkit-scrollbar-thumb{background:var(--b1);border-radius:2px}
-
-/* Card */
 .card{background:var(--s2);border:1px solid var(--b1);border-radius:var(--r);padding:10px 11px;cursor:grab;transition:transform .13s,border-color .13s,box-shadow .13s;user-select:none;position:relative}
 .card:hover{border-color:var(--b2);transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.5)}
 .card.dragging{opacity:.35;cursor:grabbing;transform:scale(.97)}
@@ -74,21 +62,15 @@ html,body,#root{height:100%;background:var(--bg);color:var(--t1);font-family:var
 .mav{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--s2);display:flex;align-items:center;justify-content:center;font-size:7px;font-weight:800;color:#000;margin-left:-4px}
 .mav:first-child{margin-left:0}
 .card-notes{font-size:11px;color:var(--t3);margin-top:5px;line-height:1.4;font-style:italic}
-
-/* Add task */
 .col-foot{padding:8px;border-top:1px solid var(--b1);flex-shrink:0}
 .add-form{display:flex;flex-direction:column;gap:7px}
 .inp{background:var(--bg);border:1px solid var(--b2);color:var(--t1);padding:7px 10px;border-radius:7px;font-family:var(--font);font-size:12.5px;outline:none;width:100%;resize:none}
 .inp:focus{border-color:#3B82F6}.inp::placeholder{color:var(--t3)}
 .row{display:flex;gap:6px}
-
-/* Add column */
 .add-col-wrap{width:276px;flex-shrink:0}
 .add-col-btn{width:100%;padding:14px;background:transparent;border:2px dashed var(--b2);border-radius:13px;color:var(--t3);cursor:pointer;font-family:var(--font);font-size:13px;font-weight:700;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:8px}
 .add-col-btn:hover{border-color:#3B82F6;color:#60A5FA;background:rgba(59,130,246,.05)}
 .add-col-form{background:var(--s1);border:1px solid var(--b1);border-radius:13px;padding:14px;display:flex;flex-direction:column;gap:8px}
-
-/* Modal */
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(3px)}
 .modal{background:var(--s1);border:1px solid var(--b2);border-radius:16px;padding:22px;width:460px;max-width:100%;max-height:88vh;overflow-y:auto;box-shadow:0 30px 70px rgba(0,0,0,.7)}
 .modal h2{font-size:17px;font-weight:800;margin-bottom:18px;letter-spacing:-.3px}
@@ -101,23 +83,17 @@ html,body,#root{height:100%;background:var(--bg);color:var(--t1);font-family:var
 .chip.on{border-color:currentColor;color:var(--t1)}.chip-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
 .mfoot{display:flex;justify-content:flex-end;gap:8px;margin-top:20px;padding-top:14px;border-top:1px solid var(--b1)}
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-
-/* Team panel */
 .panel{position:fixed;top:69px;right:0;width:300px;height:calc(100vh - 69px);background:var(--s1);border-left:1px solid var(--b2);z-index:100;padding:18px;overflow-y:auto;box-shadow:-12px 0 35px rgba(0,0,0,.5);animation:sIn .18s ease}
 @keyframes sIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
 .panel h3{font-size:14px;font-weight:800;margin-bottom:14px}
 .prow{display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:1px solid var(--b1)}
 .prow:last-of-type{border-bottom:none}
-
-/* Loading */
 .loading-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;gap:14px;background:var(--bg)}
 .spinner{width:30px;height:30px;border:3px solid var(--b2);border-top-color:#3B82F6;border-radius:50%;animation:spin .7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-
-/* Setup screen */
 .setup-wrap{min-height:100vh;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:24px}
 .setup-card{background:var(--s1);border:1px solid var(--b2);border-radius:20px;padding:32px;width:580px;max-width:100%;box-shadow:0 40px 80px rgba(0,0,0,.6)}
-.setup-card h1{font-size:20px;font-weight:800;margin-bottom:6px;letter-spacing:-.4px}
+.setup-card h1{font-size:20px;font-weight:800;margin-bottom:8px;letter-spacing:-.4px}
 .setup-sub{font-size:13px;color:var(--t2);line-height:1.7;margin-bottom:22px}
 .steps{display:flex;flex-direction:column;gap:9px;margin-bottom:22px}
 .step{display:flex;gap:12px;padding:12px 14px;background:var(--s2);border-radius:10px;border:1px solid var(--b1)}
@@ -127,12 +103,12 @@ html,body,#root{height:100%;background:var(--bg);color:var(--t1);font-family:var
 .step-b a{color:#60A5FA;font-weight:700;text-decoration:none}.step-b a:hover{text-decoration:underline}
 .step-b code{font-family:var(--mono);font-size:11px;background:rgba(59,130,246,.12);padding:1px 5px;border-radius:4px;color:#93C5FD}
 .divider{border:none;border-top:1px solid var(--b1);margin:20px 0}
-.paste-label{font-size:13px;font-weight:800;color:var(--t1);margin-bottom:4px}
-.paste-sub{font-size:12px;color:var(--t3);margin-bottom:12px;line-height:1.5}
-.paste-box{background:var(--bg);border:1px solid var(--b2);color:var(--t1);padding:12px;border-radius:9px;font-family:var(--mono);font-size:11.5px;outline:none;width:100%;min-height:130px;resize:vertical;line-height:1.6}
+.paste-label{font-size:14px;font-weight:800;color:var(--t1);margin-bottom:4px}
+.paste-hint{font-size:12px;color:var(--t3);margin-bottom:12px;line-height:1.5}
+.paste-box{background:var(--bg);border:1px solid var(--b2);color:var(--t1);padding:12px;border-radius:9px;font-family:var(--mono);font-size:11.5px;outline:none;width:100%;min-height:140px;resize:vertical;line-height:1.6;display:block}
 .paste-box:focus{border-color:#3B82F6}
-.paste-box::placeholder{color:var(--t3);opacity:.6}
-.connect-btn{width:100%;padding:12px;border-radius:10px;border:none;background:#3B82F6;color:#fff;font-family:var(--font);font-size:14px;font-weight:800;cursor:pointer;transition:all .15s;margin-top:10px}
+.paste-box::placeholder{color:var(--t3);opacity:.55}
+.connect-btn{width:100%;padding:13px;border-radius:10px;border:none;background:#3B82F6;color:#fff;font-family:var(--font);font-size:14px;font-weight:800;cursor:pointer;transition:all .15s;margin-top:10px;display:block}
 .connect-btn:hover{background:#2563EB}
 .connect-btn:disabled{background:#1e3a5f;color:#4A6A88;cursor:not-allowed}
 .err-box{font-size:12px;color:#F87171;margin-top:10px;padding:9px 12px;background:rgba(239,68,68,.08);border-radius:7px;border:1px solid rgba(239,68,68,.2);line-height:1.5}
@@ -154,7 +130,7 @@ const STATUS  = {
   done:       {label:"Done",        bg:"#10B98122",color:"#34D399"},
 };
 const PRI = {
-  low:    {label:"Low",    bg:"#64748B22",color:"#94A3B8"},
+  low:    {label:"Low",   bg:"#64748B22",color:"#94A3B8"},
   medium: {label:"Med",   bg:"#3B82F622",color:"#60A5FA"},
   high:   {label:"High",  bg:"#F59E0B22",color:"#FCD34D"},
   urgent: {label:"Urgent",bg:"#EF444422",color:"#F87171"},
@@ -177,49 +153,76 @@ const INIT = {
   ]
 };
 
-const CFG_KEY = "hra-fb-config-v1";
-const getSavedConfig = () => { try { const v=localStorage.getItem(CFG_KEY); return v?JSON.parse(v):null; } catch { return null; } };
-const saveConfig = cfg => { try { localStorage.setItem(CFG_KEY,JSON.stringify(cfg)); } catch {} };
+const CFG_KEY = "hra-fb-cfg-v2";
 
-/* ── Setup Screen ── */
+function getSaved() {
+  try { const v = localStorage.getItem(CFG_KEY); return v ? JSON.parse(v) : null; } catch { return null; }
+}
+function saveCfg(cfg) {
+  try { localStorage.setItem(CFG_KEY, JSON.stringify(cfg)); } catch {}
+}
+function clearCfg() {
+  try { localStorage.removeItem(CFG_KEY); } catch {}
+}
+
+function parseConfig(raw) {
+  const cfg = {};
+  ["apiKey","authDomain","databaseURL","projectId","storageBucket","messagingSenderId","appId"].forEach(k => {
+    const m = raw.match(new RegExp(k + '\\s*:\\s*["\`\'](.*?)["\`\']'));
+    if (m) cfg[k] = m[1];
+  });
+  return cfg;
+}
+
+function initFirebase(cfg) {
+  try {
+    // Clean up existing apps
+    firebase.apps.forEach(a => a.delete().catch(()=>{}));
+  } catch(e) {}
+  const app = firebase.initializeApp(cfg);
+  const db  = firebase.database();
+  return db;
+}
+
+/* ── Setup Screen ────────────────────────────────────── */
 function SetupScreen({onConnect}) {
-  const [paste,setPaste] = useState("");
-  const [loading,setLoading] = useState(false);
-  const [err,setErr] = useState("");
+  const [paste,   setPaste]   = useState("");
+  const [loading, setLoading] = useState(false);
+  const [err,     setErr]     = useState("");
 
-  const parseConfig = (raw) => {
-    const result = {};
-    ["apiKey","authDomain","databaseURL","projectId","storageBucket","messagingSenderId","appId"].forEach(k => {
-      const m = raw.match(new RegExp(k+'\\s*:\\s*["\`\'](.*?)["\`\']'));
-      if (m) result[k] = m[1];
-    });
-    return result;
-  };
-
-  const connect = async () => {
+  const connect = () => {
     setErr(""); setLoading(true);
     const cfg = parseConfig(paste);
+
     if (!cfg.apiKey || !cfg.projectId) {
-      setErr("Could not find apiKey or projectId. Make sure you pasted the full firebaseConfig block."); setLoading(false); return;
+      setErr("Could not find apiKey or projectId — make sure you pasted the full firebaseConfig block.");
+      setLoading(false); return;
     }
     if (!cfg.databaseURL) {
-      setErr("Could not find databaseURL. It should look like: https://your-project-default-rtdb.firebaseio.com"); setLoading(false); return;
+      setErr("Could not find databaseURL. It should look like: https://your-project-default-rtdb.firebaseio.com");
+      setLoading(false); return;
     }
+
     try {
-      const {initializeApp,getApps,deleteApp} = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js");
-      const {getDatabase,ref,onValue,set}      = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js");
-      getApps().forEach(a => deleteApp(a).catch(()=>{}));
-      const app = initializeApp(cfg);
-      const db  = getDatabase(app);
-      await new Promise((resolve,reject) => {
-        const t = setTimeout(()=>reject(new Error("Timed out. Check your databaseURL and make sure Realtime Database is in test mode.")),8000);
-        onValue(ref(db,".info/connected"), snap => { if(snap.val()===true){clearTimeout(t);resolve();} });
+      const db = initFirebase(cfg);
+      // Test connection
+      db.ref(".info/connected").on("value", snap => {
+        if (snap.val() === true) {
+          saveCfg(cfg);
+          window._firebaseDb = db;
+          setLoading(false);
+          onConnect();
+        }
       });
-      saveConfig(cfg);
-      window._fb = {db,ref,onValue,set,ready:true};
-      onConnect();
+      // Timeout after 8s
+      setTimeout(() => {
+        if (loading) {
+          setErr("Connection timed out. Check your databaseURL and make sure Realtime Database is set to test mode.");
+          setLoading(false);
+        }
+      }, 8000);
     } catch(e) {
-      setErr(e.message||"Connection failed. Double-check your config and that Realtime Database is enabled in test mode.");
+      setErr("Error: " + (e.message || "Could not connect. Check your config."));
       setLoading(false);
     }
   };
@@ -228,40 +231,66 @@ function SetupScreen({onConnect}) {
     <div className="setup-wrap">
       <div className="setup-card">
         <h1>🔥 Connect Firebase for Live Sync</h1>
-        <p className="setup-sub">One-time setup — paste your Firebase config below and click Connect. Your board will sync live with your whole team. No file editing needed.</p>
+        <p className="setup-sub">One-time setup — paste your Firebase config below and click Connect. Everyone on your team visits the same URL, pastes the same config once, and you all sync live.</p>
 
         <div className="steps">
-          <div className="step"><div className="step-n">1</div><div className="step-b"><strong>Create a free Firebase project</strong>Go to <a href="https://console.firebase.google.com" target="_blank">console.firebase.google.com</a> → "Add project" → name it anything → click through to create.</div></div>
-          <div className="step"><div className="step-n">2</div><div className="step-b"><strong>Enable Realtime Database</strong>Build → Realtime Database → "Create database" → any location → <strong>Start in test mode</strong> → Enable.</div></div>
-          <div className="step"><div className="step-n">3</div><div className="step-b"><strong>Get your config</strong>⚙️ gear → Project Settings → scroll to "Your apps" → click the <code>&lt;/&gt;</code> web icon → Register app → copy the <code>firebaseConfig</code> block shown.</div></div>
-          <div className="step"><div className="step-n">4</div><div className="step-b"><strong>Paste it below and click Connect</strong>That's it — your config saves in your browser automatically.</div></div>
+          <div className="step">
+            <div className="step-n">1</div>
+            <div className="step-b">
+              <strong>Create a free Firebase project</strong>
+              Go to <a href="https://console.firebase.google.com" target="_blank">console.firebase.google.com</a> → "Add project" → name it (e.g. hra-kanban) → click through to create.
+            </div>
+          </div>
+          <div className="step">
+            <div className="step-n">2</div>
+            <div className="step-b">
+              <strong>Enable Realtime Database</strong>
+              Build → Realtime Database → "Create database" → any location → select <strong>"Start in test mode"</strong> → Enable.
+            </div>
+          </div>
+          <div className="step">
+            <div className="step-n">3</div>
+            <div className="step-b">
+              <strong>Get your config</strong>
+              ⚙️ gear icon → Project Settings → General → scroll to "Your apps" → click the <code>&lt;/&gt;</code> web icon → Register app → copy the <code>firebaseConfig</code> block.
+            </div>
+          </div>
+          <div className="step">
+            <div className="step-n">4</div>
+            <div className="step-b">
+              <strong>Paste it in the box below and click Connect</strong>
+              No file editing needed — your config is saved in your browser.
+            </div>
+          </div>
         </div>
 
         <hr className="divider"/>
 
         <div className="paste-label">Paste your Firebase config here</div>
-        <div className="paste-sub">Copy the entire firebaseConfig block from Firebase and paste it in — curly braces and all.</div>
+        <div className="paste-hint">Copy the entire firebaseConfig block from Firebase (curly braces and all) and paste it below.</div>
 
-        <textarea className="paste-box"
-          placeholder={`const firebaseConfig = {\n  apiKey: "AIza...",\n  authDomain: "your-app.firebaseapp.com",\n  databaseURL: "https://your-app-default-rtdb.firebaseio.com",\n  projectId: "your-app",\n  storageBucket: "your-app.appspot.com",\n  messagingSenderId: "123456789",\n  appId: "1:123456789:web:abc123"\n};`}
-          value={paste} onChange={e=>setPaste(e.target.value)}
+        <textarea
+          className="paste-box"
+          placeholder={"const firebaseConfig = {\n  apiKey: \"AIza...\",\n  authDomain: \"your-app.firebaseapp.com\",\n  databaseURL: \"https://your-app-default-rtdb.firebaseio.com\",\n  projectId: \"your-app\",\n  storageBucket: \"your-app.appspot.com\",\n  messagingSenderId: \"123456789\",\n  appId: \"1:123...\"\n};"}
+          value={paste}
+          onChange={e => setPaste(e.target.value)}
         />
 
         {err && <div className="err-box">⚠️ {err}</div>}
 
-        <button className="connect-btn" disabled={loading||!paste.trim()} onClick={connect}>
+        <button className="connect-btn" disabled={loading || !paste.trim()} onClick={connect}>
           {loading ? "Connecting…" : "Connect & Open Board →"}
         </button>
 
         <div className="tip-box">
-          ✅ Free tier — Firebase Spark plan supports 100 simultaneous users, 1 GB storage, no credit card needed. Each teammate visits the same URL, pastes this same config once, and everyone syncs live.
+          ✅ <strong>Free tier is plenty</strong> — Firebase Spark plan: 100 simultaneous users, 1 GB storage, no credit card needed.
         </div>
       </div>
     </div>
   );
 }
 
-/* ── Board ── */
+/* ── Board ───────────────────────────────────────────── */
 function Board() {
   const [board,      setBoard]     = useState(null);
   const [syncStatus, setSyncStatus]= useState("loading");
@@ -278,82 +307,82 @@ function Board() {
   const [nameInp,    setNameInp]   = useState("");
   const skipNext = useRef(false);
 
-  useEffect(()=>{
-    const fb = window._fb;
-    if (!fb?.ready) return;
-    const boardRef = fb.ref(fb.db,"board");
-    const unsub = fb.onValue(boardRef, snap=>{
-      if (skipNext.current){skipNext.current=false;return;}
+  useEffect(() => {
+    const db = window._firebaseDb;
+    if (!db) return;
+    const boardRef = db.ref("board");
+    boardRef.on("value", snap => {
+      if (skipNext.current) { skipNext.current = false; return; }
       const data = snap.val();
-      if (data){setBoard(data);setSyncStatus("live");}
-      else{fb.set(boardRef,INIT);}
-    }, ()=>{
+      if (data) { setBoard(data); setSyncStatus("live"); }
+      else { boardRef.set(INIT); }
+    }, () => {
       setSyncStatus("error");
-      try{const v=localStorage.getItem("hra-kb");setBoard(v?JSON.parse(v):INIT);}catch{setBoard(INIT);}
+      try { const v = localStorage.getItem("hra-kb"); setBoard(v ? JSON.parse(v) : INIT); } catch { setBoard(INIT); }
     });
-    return unsub;
-  },[]);
+    return () => boardRef.off();
+  }, []);
 
-  const upd = useCallback(fn=>{
-    setBoard(p=>{
-      const next=fn(p);
-      const fb=window._fb;
-      if(fb?.ready){skipNext.current=true;fb.set(fb.ref(fb.db,"board"),next).catch(()=>{skipNext.current=false;});}
-      try{localStorage.setItem("hra-kb",JSON.stringify(next));}catch{}
+  const upd = useCallback(fn => {
+    setBoard(p => {
+      const next = fn(p);
+      const db = window._firebaseDb;
+      if (db) { skipNext.current = true; db.ref("board").set(next).catch(() => { skipNext.current = false; }); }
+      try { localStorage.setItem("hra-kb", JSON.stringify(next)); } catch {}
       return next;
     });
-  },[]);
+  }, []);
 
-  if(!board) return (
+  if (!board) return (
     <div className="loading-screen">
       <div className="spinner"/>
       <span style={{fontSize:13,color:"var(--t3)"}}>Connecting to live board…</span>
     </div>
   );
 
-  const onDS=(ti,ci)=>setDrag({taskId:ti,colId:ci});
-  const onDO=(e,ci)=>{e.preventDefault();setOver(ci);};
-  const onDrop=(e,toId)=>{
+  const onDS   = (ti,ci) => setDrag({taskId:ti,colId:ci});
+  const onDO   = (e,ci)  => { e.preventDefault(); setOver(ci); };
+  const onDrop = (e,toId) => {
     e.preventDefault();
-    if(!drag||drag.colId===toId){setDrag(null);setOver(null);return;}
-    upd(p=>{
+    if (!drag||drag.colId===toId) { setDrag(null); setOver(null); return; }
+    upd(p => {
       let moved;
-      const cols=p.columns
-        .map(c=>{if(c.id===drag.colId){moved=c.tasks.find(t=>t.id===drag.taskId);return{...c,tasks:c.tasks.filter(t=>t.id!==drag.taskId)};}return c;})
-        .map(c=>c.id===toId&&moved?{...c,tasks:[...c.tasks,moved]}:c);
-      return{...p,columns:cols};
+      const cols = p.columns
+        .map(c => { if(c.id===drag.colId){moved=c.tasks.find(t=>t.id===drag.taskId);return{...c,tasks:c.tasks.filter(t=>t.id!==drag.taskId)};} return c; })
+        .map(c => c.id===toId&&moved ? {...c,tasks:[...c.tasks,moved]} : c);
+      return {...p, columns:cols};
     });
-    setDrag(null);setOver(null);
+    setDrag(null); setOver(null);
   };
-  const onDE=()=>{setDrag(null);setOver(null);};
+  const onDE = () => { setDrag(null); setOver(null); };
 
-  const addTask   = ci=>{if(!newTxt.trim())return;upd(p=>({...p,columns:p.columns.map(c=>c.id===ci?{...c,tasks:[...c.tasks,mkTask(newTxt.trim())]}:c)}));setNewTxt("");setAddCol(null);};
-  const delTask   =(ci,ti)=>upd(p=>({...p,columns:p.columns.map(c=>c.id===ci?{...c,tasks:c.tasks.filter(t=>t.id!==ti)}:c)}));
-  const addColumn =()=>{if(!newColTtl.trim())return;upd(p=>({...p,columns:[...p.columns,{id:uid(),title:newColTtl.trim(),accent:ACCENT[Math.floor(Math.random()*ACCENT.length)],tasks:[]}]}));setNewColTtl("");setAddingCol(false);};
-  const delColumn =ci=>{if(window.confirm("Delete this column and all its tasks?"))upd(p=>({...p,columns:p.columns.filter(c=>c.id!==ci)}));};
-  const saveTask  =()=>{if(!editTask)return;const{colId,...t}=editTask;upd(p=>({...p,columns:p.columns.map(c=>c.id===colId?{...c,tasks:c.tasks.map(x=>x.id===t.id?t:x)}:c)}));setEditTask(null);};
-  const addPerson =()=>{if(!newPerson.trim())return;const used=board.people.map(p=>p.color);const avail=PALETTE.filter(c=>!used.includes(c));upd(p=>({...p,people:[...p.people,{id:uid(),name:newPerson.trim(),color:avail[0]||PALETTE[p.people.length%PALETTE.length]}]}));setNewPerson("");};
-  const delPerson =pid=>upd(p=>({...p,people:p.people.filter(x=>x.id!==pid),columns:p.columns.map(c=>({...c,tasks:c.tasks.map(t=>({...t,assignees:t.assignees.filter(a=>a!==pid)}))}))}));
-  const toggleA   =pid=>setEditTask(prev=>({...prev,assignees:prev.assignees.includes(pid)?prev.assignees.filter(a=>a!==pid):[...prev.assignees,pid]}));
+  const addTask   = ci  => { if(!newTxt.trim())return; upd(p=>({...p,columns:p.columns.map(c=>c.id===ci?{...c,tasks:[...c.tasks,mkTask(newTxt.trim())]}:c)})); setNewTxt(""); setAddCol(null); };
+  const delTask   = (ci,ti) => upd(p=>({...p,columns:p.columns.map(c=>c.id===ci?{...c,tasks:c.tasks.filter(t=>t.id!==ti)}:c)}));
+  const addColumn = () => { if(!newColTtl.trim())return; upd(p=>({...p,columns:[...p.columns,{id:uid(),title:newColTtl.trim(),accent:ACCENT[Math.floor(Math.random()*ACCENT.length)],tasks:[]}]})); setNewColTtl(""); setAddingCol(false); };
+  const delColumn = ci  => { if(window.confirm("Delete this column and all its tasks?")) upd(p=>({...p,columns:p.columns.filter(c=>c.id!==ci)})); };
+  const saveTask  = ()  => { if(!editTask)return; const{colId,...t}=editTask; upd(p=>({...p,columns:p.columns.map(c=>c.id===colId?{...c,tasks:c.tasks.map(x=>x.id===t.id?t:x)}:c)})); setEditTask(null); };
+  const addPerson = ()  => { if(!newPerson.trim())return; const used=board.people.map(p=>p.color); const avail=PALETTE.filter(c=>!used.includes(c)); upd(p=>({...p,people:[...p.people,{id:uid(),name:newPerson.trim(),color:avail[0]||PALETTE[p.people.length%PALETTE.length]}]})); setNewPerson(""); };
+  const delPerson = pid => upd(p=>({...p,people:p.people.filter(x=>x.id!==pid),columns:p.columns.map(c=>({...c,tasks:c.tasks.map(t=>({...t,assignees:t.assignees.filter(a=>a!==pid)}))}))}));
+  const toggleA   = pid => setEditTask(prev=>({...prev,assignees:prev.assignees.includes(pid)?prev.assignees.filter(a=>a!==pid):[...prev.assignees,pid]}));
 
   return (
     <div className="app" onClick={()=>showPpl&&setShowPpl(false)}>
       <header className="hdr">
         <div className="logo">K</div>
         {editName
-          ?<input className="bname-inp" value={nameInp} autoFocus
+          ? <input className="bname-inp" value={nameInp} autoFocus
               onChange={e=>setNameInp(e.target.value)}
               onBlur={()=>{if(nameInp.trim())upd(p=>({...p,boardName:nameInp.trim()}));setEditName(false);}}
               onKeyDown={e=>{if(e.key==="Enter")e.target.blur();if(e.key==="Escape")setEditName(false);}}
             />
-          :<div className="bname" onClick={()=>{setEditName(true);setNameInp(board.boardName);}}>{board.boardName}</div>
+          : <div className="bname" onClick={()=>{setEditName(true);setNameInp(board.boardName);}}>{board.boardName}</div>
         }
         <div className="hdr-r">
           <div className="sync-pill">
             <div className={`sdot ${syncStatus}`}/>
             <span className="slbl">{syncStatus==="live"?"live sync":syncStatus==="loading"?"connecting":"offline"}</span>
           </div>
-          <button className="btn btn-g sm" title="Change Firebase connection" onClick={()=>{if(window.confirm("Reset Firebase connection? You will need to paste your config again.")){{localStorage.removeItem(CFG_KEY);window.location.reload();}}}}>⚙ Reconnect</button>
+          <button className="btn btn-g sm" onClick={()=>{if(window.confirm("Reset Firebase connection? You will need to paste your config again.")){{clearCfg();window.location.reload();}}}}>⚙ Reconnect</button>
           <div className="av-stack">
             {board.people.slice(0,6).map(p=><div key={p.id} className="av" style={{background:p.color}} title={p.name}>{p.name[0].toUpperCase()}</div>)}
             {board.people.length>6&&<div className="av" style={{background:"#334155",color:"#94A3B8"}}>+{board.people.length-6}</div>}
@@ -516,28 +545,22 @@ function Board() {
   );
 }
 
-/* ── Root ── */
+/* ── Root ────────────────────────────────────────────── */
 function Root() {
   const [connected, setConnected] = useState(false);
   const [checking,  setChecking]  = useState(true);
 
   useEffect(()=>{
-    const cfg = getSavedConfig();
+    const cfg = getSaved();
     if (!cfg) { setChecking(false); return; }
-    (async()=>{
-      try {
-        const {initializeApp,getApps,deleteApp} = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js");
-        const {getDatabase,ref,onValue,set}      = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js");
-        getApps().forEach(a=>deleteApp(a).catch(()=>{}));
-        const app = initializeApp(cfg);
-        const db  = getDatabase(app);
-        window._fb = {db,ref,onValue,set,ready:true};
-        setConnected(true);
-      } catch {
-        setChecking(false);
-      }
-      setChecking(false);
-    })();
+    try {
+      const db = initFirebase(cfg);
+      window._firebaseDb = db;
+      setConnected(true);
+    } catch(e) {
+      clearCfg();
+    }
+    setChecking(false);
   },[]);
 
   if (checking) return (
@@ -546,6 +569,7 @@ function Root() {
       <span style={{fontSize:13,color:"var(--t3)"}}>Loading…</span>
     </div>
   );
+
   if (!connected) return <SetupScreen onConnect={()=>setConnected(true)}/>;
   return <Board/>;
 }
