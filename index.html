@@ -294,21 +294,35 @@ function startBoard(){
   board = lsGet(DATA_KEY) || INIT_BOARD;
   render();
 
-  // Then connect to Firebase
+  // Then connect to Firebase — first do a one-time read, then listen for changes
   const ref = db.ref("board");
-  ref.on("value", snap=>{
-    if(skip){skip=false;return;}
+
+  // One-time immediate read to get current data
+  ref.once("value").then(snap=>{
     const d=snap.val();
     if(d){
       board=d;
       lsSet(DATA_KEY,d);
-      setSyncStatus("live");
       render();
     } else {
-      // First time — write initial data
       ref.set(board);
     }
-  }, ()=>setSyncStatus("off"));
+    setSyncStatus("live");
+
+    // Now subscribe to live changes
+    ref.on("value", snap2=>{
+      if(skip){skip=false;return;}
+      const d2=snap2.val();
+      if(d2){
+        board=d2;
+        lsSet(DATA_KEY,d2);
+        render();
+      }
+    }, ()=>setSyncStatus("off"));
+
+  }).catch(()=>{
+    setSyncStatus("off");
+  });
 }
 
 function setSyncStatus(s){
