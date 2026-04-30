@@ -13,7 +13,7 @@
 :root{--bg:#08101A;--s1:#0D1B2A;--s2:#122035;--b1:#1E3352;--b2:#274060;--b3:#3A5A7C;--t1:#E2EDF8;--t2:#8BACC8;--t3:#4A6A88;--r:10px;--font:'Syne',sans-serif;--mono:'DM Mono',monospace}
 html,body,#root{height:100%;background:var(--bg);color:var(--t1);font-family:var(--font)}
 .app{display:flex;flex-direction:column;height:100vh;overflow:hidden}
-
+ 
 /* Header */
 .hdr{display:flex;align-items:center;gap:14px;padding:16px 20px;background:var(--s1);border-bottom:1px solid var(--b1);flex-shrink:0;z-index:50}
 .logo{width:34px;height:34px;background:linear-gradient(135deg,#3B82F6,#8B5CF6);border-radius:9px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;color:#fff;flex-shrink:0}
@@ -26,7 +26,7 @@ html,body,#root{height:100%;background:var(--bg);color:var(--t1);font-family:var
 .sdot.loading{background:#FCD34D}.sdot.err{background:#F87171}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
 .slbl{font-size:10px;font-weight:700;font-family:var(--mono);color:var(--t3)}
-
+ 
 /* Buttons */
 .btn{display:flex;align-items:center;gap:5px;padding:7px 13px;border-radius:8px;border:none;cursor:pointer;font-family:var(--font);font-size:12px;font-weight:700;transition:all .13s}
 .btn-p{background:#3B82F6;color:#fff}.btn-p:hover{background:#2563EB}
@@ -34,16 +34,16 @@ html,body,#root{height:100%;background:var(--bg);color:var(--t1);font-family:var
 .btn-g{background:transparent;color:var(--t2);border:1px solid var(--b2)}.btn-g:hover{background:var(--s2);color:var(--t1)}
 .btn-d{background:transparent;color:#F87171;border:none}.btn-d:hover{background:rgba(239,68,68,.12)}
 .sm{padding:5px 10px;font-size:11px}
-
+ 
 /* Avatars */
 .av-stack{display:flex}
 .av{width:27px;height:27px;border-radius:50%;border:2px solid var(--s1);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:#000;margin-left:-6px;cursor:pointer;transition:transform .1s;flex-shrink:0}
 .av:first-child{margin-left:0}.av:hover{transform:scale(1.15)}
-
+ 
 /* Board */
 .board{display:flex;gap:14px;padding:18px 20px 24px;overflow-x:auto;overflow-y:hidden;flex:1;align-items:flex-start}
 .board::-webkit-scrollbar{height:5px}.board::-webkit-scrollbar-thumb{background:var(--b2);border-radius:3px}
-
+ 
 /* Column */
 .col{width:276px;flex-shrink:0;background:var(--s1);border:1px solid var(--b1);border-radius:13px;display:flex;flex-direction:column;max-height:calc(100vh - 90px);transition:border-color .15s,box-shadow .15s}
 .col.over{border-color:#3B82F6;box-shadow:0 0 0 1px #3B82F6}
@@ -54,11 +54,11 @@ html,body,#root{height:100%;background:var(--bg);color:var(--t1);font-family:var
 .col-cnt{font-size:10px;color:var(--t3);background:var(--s2);padding:2px 7px;border-radius:10px;font-family:var(--mono)}
 .ico{width:22px;height:22px;border:none;background:transparent;color:var(--t3);cursor:pointer;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:15px;transition:all .1s}
 .ico:hover{background:var(--s2);color:var(--t2)}
-
+ 
 /* Tasks */
 .tasks{padding:8px;display:flex;flex-direction:column;gap:7px;flex:1;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--b1) transparent}
 .tasks::-webkit-scrollbar{width:3px}.tasks::-webkit-scrollbar-thumb{background:var(--b1);border-radius:2px}
-
+ 
 /* Card */
 .card{background:var(--s2);border:1px solid var(--b1);border-radius:var(--r);padding:10px 11px;cursor:grab;transition:transform .13s,border-color .13s,box-shadow .13s;user-select:none;position:relative}
 .card:hover{border-color:var(--b2);transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.5)}
@@ -74,20 +74,20 @@ html,body,#root{height:100%;background:var(--bg);color:var(--t1);font-family:var
 .mav{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--s2);display:flex;align-items:center;justify-content:center;font-size:7px;font-weight:800;color:#000;margin-left:-4px}
 .mav:first-child{margin-left:0}
 .card-notes{font-size:11px;color:var(--t3);margin-top:5px;line-height:1.4;font-style:italic}
-
+ 
 /* Add task */
 .col-foot{padding:8px;border-top:1px solid var(--b1);flex-shrink:0}
 .add-form{display:flex;flex-direction:column;gap:7px}
 .inp{background:var(--bg);border:1px solid var(--b2);color:var(--t1);padding:7px 10px;border-radius:7px;font-family:var(--font);font-size:12.5px;outline:none;width:100%;resize:none}
 .inp:focus{border-color:#3B82F6}.inp::placeholder{color:var(--t3)}
 .row{display:flex;gap:6px}
-
+ 
 /* Add column */
 .add-col-wrap{width:276px;flex-shrink:0}
 .add-col-btn{width:100%;padding:14px;background:transparent;border:2px dashed var(--b2);border-radius:13px;color:var(--t3);cursor:pointer;font-family:var(--font);font-size:13px;font-weight:700;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:8px}
 .add-col-btn:hover{border-color:#3B82F6;color:#60A5FA;background:rgba(59,130,246,.05)}
 .add-col-form{background:var(--s1);border:1px solid var(--b1);border-radius:13px;padding:14px;display:flex;flex-direction:column;gap:8px}
-
+ 
 /* Modal */
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(3px)}
 .modal{background:var(--s1);border:1px solid var(--b2);border-radius:16px;padding:22px;width:460px;max-width:100%;max-height:88vh;overflow-y:auto;box-shadow:0 30px 70px rgba(0,0,0,.7)}
@@ -101,19 +101,19 @@ html,body,#root{height:100%;background:var(--bg);color:var(--t1);font-family:var
 .chip.on{border-color:currentColor;color:var(--t1)}.chip-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
 .mfoot{display:flex;justify-content:flex-end;gap:8px;margin-top:20px;padding-top:14px;border-top:1px solid var(--b1)}
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-
+ 
 /* Team panel */
 .panel{position:fixed;top:69px;right:0;width:300px;height:calc(100vh - 69px);background:var(--s1);border-left:1px solid var(--b2);z-index:100;padding:18px;overflow-y:auto;box-shadow:-12px 0 35px rgba(0,0,0,.5);animation:sIn .18s ease}
 @keyframes sIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
 .panel h3{font-size:14px;font-weight:800;margin-bottom:14px}
 .prow{display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:1px solid var(--b1)}
 .prow:last-of-type{border-bottom:none}
-
+ 
 /* Loading */
 .loading-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;gap:14px;background:var(--bg)}
 .spinner{width:30px;height:30px;border:3px solid var(--b2);border-top-color:#3B82F6;border-radius:50%;animation:spin .7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-
+ 
 /* Setup screen */
 .setup-wrap{min-height:100vh;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:24px}
 .setup-card{background:var(--s1);border:1px solid var(--b2);border-radius:20px;padding:32px;width:580px;max-width:100%;box-shadow:0 40px 80px rgba(0,0,0,.6)}
@@ -143,7 +143,7 @@ html,body,#root{height:100%;background:var(--bg);color:var(--t1);font-family:var
 <div id="root"></div>
 <script type="text/babel">
 const {useState,useEffect,useCallback,useRef} = React;
-
+ 
 const ACCENT  = ["#FF6B6B","#4ECDC4","#F59E0B","#6366F1","#10B981","#F43F5E","#3B82F6","#8B5CF6","#EC4899","#14B8A6"];
 const PALETTE = ["#FF6B6B","#4ECDC4","#F59E0B","#6366F1","#10B981","#F43F5E","#3B82F6","#8B5CF6","#EC4899","#14B8A6","#F97316","#06B6D4"];
 const STATUS  = {
@@ -159,10 +159,10 @@ const PRI = {
   high:   {label:"High",  bg:"#F59E0B22",color:"#FCD34D"},
   urgent: {label:"Urgent",bg:"#EF444422",color:"#F87171"},
 };
-
+ 
 const uid = () => Math.random().toString(36).slice(2,10);
 const mkTask = (text,status="todo",priority="medium") => ({id:uid(),text,assignees:[],status,priority,notes:""});
-
+ 
 const INIT = {
   boardName:"HRA Project Board", people:[],
   columns:[
@@ -176,17 +176,17 @@ const INIT = {
     {id:uid(),title:"Mazuma",     accent:ACCENT[4],tasks:[]},
   ]
 };
-
+ 
 const CFG_KEY = "hra-fb-config-v1";
 const getSavedConfig = () => { try { const v=localStorage.getItem(CFG_KEY); return v?JSON.parse(v):null; } catch { return null; } };
 const saveConfig = cfg => { try { localStorage.setItem(CFG_KEY,JSON.stringify(cfg)); } catch {} };
-
+ 
 /* ── Setup Screen ── */
 function SetupScreen({onConnect}) {
   const [paste,setPaste] = useState("");
   const [loading,setLoading] = useState(false);
   const [err,setErr] = useState("");
-
+ 
   const parseConfig = (raw) => {
     const result = {};
     ["apiKey","authDomain","databaseURL","projectId","storageBucket","messagingSenderId","appId"].forEach(k => {
@@ -195,7 +195,7 @@ function SetupScreen({onConnect}) {
     });
     return result;
   };
-
+ 
   const connect = async () => {
     setErr(""); setLoading(true);
     const cfg = parseConfig(paste);
@@ -223,36 +223,36 @@ function SetupScreen({onConnect}) {
       setLoading(false);
     }
   };
-
+ 
   return (
     <div className="setup-wrap">
       <div className="setup-card">
         <h1>🔥 Connect Firebase for Live Sync</h1>
         <p className="setup-sub">One-time setup — paste your Firebase config below and click Connect. Your board will sync live with your whole team. No file editing needed.</p>
-
+ 
         <div className="steps">
           <div className="step"><div className="step-n">1</div><div className="step-b"><strong>Create a free Firebase project</strong>Go to <a href="https://console.firebase.google.com" target="_blank">console.firebase.google.com</a> → "Add project" → name it anything → click through to create.</div></div>
           <div className="step"><div className="step-n">2</div><div className="step-b"><strong>Enable Realtime Database</strong>Build → Realtime Database → "Create database" → any location → <strong>Start in test mode</strong> → Enable.</div></div>
           <div className="step"><div className="step-n">3</div><div className="step-b"><strong>Get your config</strong>⚙️ gear → Project Settings → scroll to "Your apps" → click the <code>&lt;/&gt;</code> web icon → Register app → copy the <code>firebaseConfig</code> block shown.</div></div>
           <div className="step"><div className="step-n">4</div><div className="step-b"><strong>Paste it below and click Connect</strong>That's it — your config saves in your browser automatically.</div></div>
         </div>
-
+ 
         <hr className="divider"/>
-
+ 
         <div className="paste-label">Paste your Firebase config here</div>
         <div className="paste-sub">Copy the entire firebaseConfig block from Firebase and paste it in — curly braces and all.</div>
-
+ 
         <textarea className="paste-box"
           placeholder={`const firebaseConfig = {\n  apiKey: "AIza...",\n  authDomain: "your-app.firebaseapp.com",\n  databaseURL: "https://your-app-default-rtdb.firebaseio.com",\n  projectId: "your-app",\n  storageBucket: "your-app.appspot.com",\n  messagingSenderId: "123456789",\n  appId: "1:123456789:web:abc123"\n};`}
           value={paste} onChange={e=>setPaste(e.target.value)}
         />
-
+ 
         {err && <div className="err-box">⚠️ {err}</div>}
-
+ 
         <button className="connect-btn" disabled={loading||!paste.trim()} onClick={connect}>
           {loading ? "Connecting…" : "Connect & Open Board →"}
         </button>
-
+ 
         <div className="tip-box">
           ✅ Free tier — Firebase Spark plan supports 100 simultaneous users, 1 GB storage, no credit card needed. Each teammate visits the same URL, pastes this same config once, and everyone syncs live.
         </div>
@@ -260,7 +260,7 @@ function SetupScreen({onConnect}) {
     </div>
   );
 }
-
+ 
 /* ── Board ── */
 function Board() {
   const [board,      setBoard]     = useState(null);
@@ -277,7 +277,7 @@ function Board() {
   const [editName,   setEditName]  = useState(false);
   const [nameInp,    setNameInp]   = useState("");
   const skipNext = useRef(false);
-
+ 
   useEffect(()=>{
     const fb = window._fb;
     if (!fb?.ready) return;
@@ -293,7 +293,7 @@ function Board() {
     });
     return unsub;
   },[]);
-
+ 
   const upd = useCallback(fn=>{
     setBoard(p=>{
       const next=fn(p);
@@ -303,14 +303,14 @@ function Board() {
       return next;
     });
   },[]);
-
+ 
   if(!board) return (
     <div className="loading-screen">
       <div className="spinner"/>
       <span style={{fontSize:13,color:"var(--t3)"}}>Connecting to live board…</span>
     </div>
   );
-
+ 
   const onDS=(ti,ci)=>setDrag({taskId:ti,colId:ci});
   const onDO=(e,ci)=>{e.preventDefault();setOver(ci);};
   const onDrop=(e,toId)=>{
@@ -326,7 +326,7 @@ function Board() {
     setDrag(null);setOver(null);
   };
   const onDE=()=>{setDrag(null);setOver(null);};
-
+ 
   const addTask   = ci=>{if(!newTxt.trim())return;upd(p=>({...p,columns:p.columns.map(c=>c.id===ci?{...c,tasks:[...c.tasks,mkTask(newTxt.trim())]}:c)}));setNewTxt("");setAddCol(null);};
   const delTask   =(ci,ti)=>upd(p=>({...p,columns:p.columns.map(c=>c.id===ci?{...c,tasks:c.tasks.filter(t=>t.id!==ti)}:c)}));
   const addColumn =()=>{if(!newColTtl.trim())return;upd(p=>({...p,columns:[...p.columns,{id:uid(),title:newColTtl.trim(),accent:ACCENT[Math.floor(Math.random()*ACCENT.length)],tasks:[]}]}));setNewColTtl("");setAddingCol(false);};
@@ -335,7 +335,7 @@ function Board() {
   const addPerson =()=>{if(!newPerson.trim())return;const used=board.people.map(p=>p.color);const avail=PALETTE.filter(c=>!used.includes(c));upd(p=>({...p,people:[...p.people,{id:uid(),name:newPerson.trim(),color:avail[0]||PALETTE[p.people.length%PALETTE.length]}]}));setNewPerson("");};
   const delPerson =pid=>upd(p=>({...p,people:p.people.filter(x=>x.id!==pid),columns:p.columns.map(c=>({...c,tasks:c.tasks.map(t=>({...t,assignees:t.assignees.filter(a=>a!==pid)}))}))}));
   const toggleA   =pid=>setEditTask(prev=>({...prev,assignees:prev.assignees.includes(pid)?prev.assignees.filter(a=>a!==pid):[...prev.assignees,pid]}));
-
+ 
   return (
     <div className="app" onClick={()=>showPpl&&setShowPpl(false)}>
       <header className="hdr">
@@ -362,7 +362,7 @@ function Board() {
           <button className="btn btn-p sm" onClick={()=>setAddingCol(true)}>+ Column</button>
         </div>
       </header>
-
+ 
       <div className="board" onClick={()=>showPpl&&setShowPpl(false)}>
         {board.columns.map(col=>(
           <div key={col.id} className={`col${over===col.id?" over":""}`}
@@ -435,7 +435,7 @@ function Board() {
           }
         </div>
       </div>
-
+ 
       {showPpl&&(
         <div className="panel" onClick={e=>e.stopPropagation()}>
           <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:14}}>
@@ -463,7 +463,7 @@ function Board() {
           </div>
         </div>
       )}
-
+ 
       {editTask&&(
         <div className="overlay" onClick={()=>setEditTask(null)}>
           <div className="modal" onClick={e=>e.stopPropagation()}>
@@ -515,12 +515,12 @@ function Board() {
     </div>
   );
 }
-
+ 
 /* ── Root ── */
 function Root() {
   const [connected, setConnected] = useState(false);
   const [checking,  setChecking]  = useState(true);
-
+ 
   useEffect(()=>{
     const cfg = getSavedConfig();
     if (!cfg) { setChecking(false); return; }
@@ -539,7 +539,7 @@ function Root() {
       setChecking(false);
     })();
   },[]);
-
+ 
   if (checking) return (
     <div className="loading-screen">
       <div className="spinner"/>
@@ -549,7 +549,7 @@ function Root() {
   if (!connected) return <SetupScreen onConnect={()=>setConnected(true)}/>;
   return <Board/>;
 }
-
+ 
 ReactDOM.createRoot(document.getElementById("root")).render(<Root/>);
 </script>
 </body>
