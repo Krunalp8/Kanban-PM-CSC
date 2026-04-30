@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HRA Project Board</title>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<!--
+  ============================================================
+  STEP 1 OF 1: Replace the placeholder values below with your
+  real Firebase config. Everything else is already set up.
+  ============================================================
+-->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey:            "YOUR_API_KEY",
+    authDomain:        "YOUR_PROJECT_ID.firebaseapp.com",
+    databaseURL:       "https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com",
+    projectId:         "YOUR_PROJECT_ID",
+    storageBucket:     "YOUR_PROJECT_ID.appspot.com",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId:             "YOUR_APP_ID"
+  };
+
+  try {
+    const app = initializeApp(firebaseConfig);
+    const db  = getDatabase(app);
+    window._fb = { db, ref, onValue, set, ready: true };
+  } catch(e) {
+    window._fb = { ready: false, error: e.message };
+  }
+</script>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#08101A;--s1:#0D1B2A;--s2:#122035;
+  --b1:#1E3352;--b2:#274060;
+  --t1:#E2EDF8;--t2:#8BACC8;--t3:#4A6A88;
+  --r:10px;--font:'Syne',sans-serif;--mono:'DM Mono',monospace
+}
+html,body,#root{height:100%;background:var(--bg);color:var(--t1);font-family:var(--font)}
+.app{display:flex;flex-direction:column;height:100vh;overflow:hidden}
+
+/* ── Header ── */
+.hdr{display:flex;align-items:center;gap:14px;padding:16px 20px;background:var(--s1);border-bottom:1px solid var(--b1);flex-shrink:0;z-index:50}
+.logo{width:34px;height:34px;background:linear-gradient(135deg,#3B82F6,#8B5CF6);border-radius:9px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;color:#fff;flex-shrink:0}
+.bname{font-size:17px;font-weight:800;letter-spacing:-.5px;cursor:pointer;user-select:none}.bname:hover{opacity:.7}
+.bname-inp{font-size:17px;font-weight:800;font-family:var(--font);background:var(--s2);border:1px solid var(--b2);color:var(--t1);padding:4px 10px;border-radius:7px;outline:none;width:260px}
+.hdr-r{margin-left:auto;display:flex;gap:8px;align-items:center}
+
+/* ── Sync indicator ── */
+.sync-pill{display:flex;align-items:center;gap:6px;padding:4px 10px;border-radius:20px;background:var(--s2);border:1px solid var(--b1)}
+.sdot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.sdot.live{background:#34D399;animation:pulse 2s infinite}
+.sdot.loading{background:#FCD34D}
+.sdot.err{background:#F87171}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.slbl{font-size:10px;font-weight:700;font-family:var(--mono);color:var(--t3)}
+
+/* ── Buttons ── */
+.btn{display:flex;align-items:center;gap:5px;padding:7px 13px;border-radius:8px;border:none;cursor:pointer;font-family:var(--font);font-size:12px;font-weight:700;transition:all .13s}
+.btn-p{background:#3B82F6;color:#fff}.btn-p:hover{background:#2563EB}
+.btn-g{background:transparent;color:var(--t2);border:1px solid var(--b2)}.btn-g:hover{background:var(--s2);color:var(--t1)}
+.btn-d{background:transparent;color:#F87171;border:none}.btn-d:hover{background:rgba(239,68,68,.12)}
+.sm{padding:5px 10px;font-size:11px}
+
+/* ── Avatars ── */
+.av-stack{display:flex}
+.av{width:27px;height:27px;border-radius:50%;border:2px solid var(--s1);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:#000;margin-left:-6px;cursor:pointer;transition:transform .1s;flex-shrink:0}
+.av:first-child{margin-left:0}.av:hover{transform:scale(1.15)}
+
+/* ── Board ── */
+.board{display:flex;gap:14px;padding:18px 20px 24px;overflow-x:auto;overflow-y:hidden;flex:1;align-items:flex-start}
+.board::-webkit-scrollbar{height:5px}.board::-webkit-scrollbar-thumb{background:var(--b2);border-radius:3px}
+
+/* ── Column ── */
+.col{width:276px;flex-shrink:0;background:var(--s1);border:1px solid var(--b1);border-radius:13px;display:flex;flex-direction:column;max-height:calc(100vh - 90px);transition:border-color .15s,box-shadow .15s}
+.col.over{border-color:#3B82F6;box-shadow:0 0 0 1px #3B82F6}
+.col-top{position:relative;padding:14px 13px 11px}
+.col-bar{position:absolute;top:0;left:0;width:100%;height:3px;border-radius:13px 13px 0 0}
+.col-head{display:flex;align-items:center;gap:7px;margin-top:4px}
+.col-ttl{font-size:13px;font-weight:800;letter-spacing:.4px;flex:1}
+.col-cnt{font-size:10px;color:var(--t3);background:var(--s2);padding:2px 7px;border-radius:10px;font-family:var(--mono)}
+.ico{width:22px;height:22px;border:none;background:transparent;color:var(--t3);cursor:pointer;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:15px;transition:all .1s}
+.ico:hover{background:var(--s2);color:var(--t2)}
+
+/* ── Tasks ── */
+.tasks{padding:8px;display:flex;flex-direction:column;gap:7px;flex:1;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--b1) transparent}
+.tasks::-webkit-scrollbar{width:3px}.tasks::-webkit-scrollbar-thumb{background:var(--b1);border-radius:2px}
+
+/* ── Card ── */
+.card{background:var(--s2);border:1px solid var(--b1);border-radius:var(--r);padding:10px 11px;cursor:grab;transition:transform .13s,border-color .13s,box-shadow .13s;user-select:none;position:relative}
+.card:hover{border-color:var(--b2);transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.5)}
+.card.dragging{opacity:.35;cursor:grabbing;transform:scale(.97)}
+.card-acts{position:absolute;top:7px;right:7px;display:none;gap:3px}
+.card:hover .card-acts{display:flex}
+.ca{width:19px;height:19px;border:none;background:var(--s1);color:var(--t3);cursor:pointer;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:10px;transition:all .1s}
+.ca:hover{color:var(--t1);background:var(--b1)}.ca.del:hover{color:#F87171}
+.card-txt{font-size:12.5px;font-weight:600;line-height:1.5;color:var(--t1);margin-bottom:9px;padding-right:44px}
+.card-meta{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.badge{font-size:9.5px;font-weight:600;padding:2px 6px;border-radius:5px;font-family:var(--mono)}
+.avs{margin-left:auto;display:flex}
+.mav{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--s2);display:flex;align-items:center;justify-content:center;font-size:7px;font-weight:800;color:#000;margin-left:-4px}
+.mav:first-child{margin-left:0}
+.card-notes{font-size:11px;color:var(--t3);margin-top:5px;line-height:1.4;font-style:italic}
+
+/* ── Add task footer ── */
+.col-foot{padding:8px;border-top:1px solid var(--b1);flex-shrink:0}
+.add-form{display:flex;flex-direction:column;gap:7px}
+.inp{background:var(--bg);border:1px solid var(--b2);color:var(--t1);padding:7px 10px;border-radius:7px;font-family:var(--font);font-size:12.5px;outline:none;width:100%;resize:none}
+.inp:focus{border-color:#3B82F6}.inp::placeholder{color:var(--t3)}
+.row{display:flex;gap:6px}
+
+/* ── Add column ── */
+.add-col-wrap{width:276px;flex-shrink:0}
+.add-col-btn{width:100%;padding:14px;background:transparent;border:2px dashed var(--b2);border-radius:13px;color:var(--t3);cursor:pointer;font-family:var(--font);font-size:13px;font-weight:700;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:8px}
+.add-col-btn:hover{border-color:#3B82F6;color:#60A5FA;background:rgba(59,130,246,.05)}
+.add-col-form{background:var(--s1);border:1px solid var(--b1);border-radius:13px;padding:14px;display:flex;flex-direction:column;gap:8px}
+
+/* ── Modal ── */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(3px)}
+.modal{background:var(--s1);border:1px solid var(--b2);border-radius:16px;padding:22px;width:460px;max-width:100%;max-height:88vh;overflow-y:auto;box-shadow:0 30px 70px rgba(0,0,0,.7)}
+.modal h2{font-size:17px;font-weight:800;margin-bottom:18px;letter-spacing:-.3px}
+.frow{margin-bottom:14px}
+.lbl{font-size:10px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.9px;margin-bottom:6px;display:block;font-family:var(--mono)}
+.sel{background:var(--bg);border:1px solid var(--b2);color:var(--t1);padding:7px 10px;border-radius:7px;font-family:var(--font);font-size:12.5px;outline:none;width:100%}
+.sel:focus{border-color:#3B82F6} select option{background:#0D1B2A}
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.chip{display:flex;align-items:center;gap:5px;padding:5px 10px 5px 7px;border-radius:20px;border:2px solid transparent;cursor:pointer;font-size:11.5px;font-weight:700;transition:all .13s;background:var(--s2);color:var(--t2)}
+.chip.on{border-color:currentColor;color:var(--t1)}.chip-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.mfoot{display:flex;justify-content:flex-end;gap:8px;margin-top:20px;padding-top:14px;border-top:1px solid var(--b1)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+
+/* ── People panel ── */
+.panel{position:fixed;top:69px;right:0;width:300px;height:calc(100vh - 69px);background:var(--s1);border-left:1px solid var(--b2);z-index:100;padding:18px;overflow-y:auto;box-shadow:-12px 0 35px rgba(0,0,0,.5);animation:sIn .18s ease}
+@keyframes sIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
+.panel h3{font-size:14px;font-weight:800;margin-bottom:14px}
+.prow{display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:1px solid var(--b1)}
+.prow:last-of-type{border-bottom:none}
+
+/* ── Setup / Loading screens ── */
+.center-screen{display:flex;align-items:center;justify-content:center;height:100vh;background:var(--bg);padding:20px}
+.spinner{width:30px;height:30px;border:3px solid var(--b2);border-top-color:#3B82F6;border-radius:50%;animation:spin .7s linear infinite;margin-bottom:14px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.setup-box{background:var(--s1);border:1px solid #3B82F680;border-radius:18px;padding:30px;width:540px;max-width:100%}
+.setup-box h2{font-size:19px;font-weight:800;margin-bottom:8px}
+.setup-box .sub{font-size:13px;color:var(--t2);line-height:1.7;margin-bottom:22px}
+.step{display:flex;gap:12px;margin-bottom:12px;padding:13px;background:var(--s2);border-radius:10px;border:1px solid var(--b1)}
+.step-n{width:24px;height:24px;border-radius:50%;background:#3B82F6;color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.step-b{font-size:12.5px;color:var(--t2);line-height:1.65}
+.step-b strong{color:var(--t1);display:block;margin-bottom:3px;font-size:13px}
+.step-b a{color:#60A5FA;font-weight:700;text-decoration:none}.step-b a:hover{text-decoration:underline}
+code{font-family:var(--mono);font-size:11px;background:rgba(59,130,246,.15);padding:2px 6px;border-radius:4px;color:#93C5FD}
+.tip{margin-top:18px;padding:11px 14px;background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.2);border-radius:9px;font-size:12px;color:#6EE7B7;line-height:1.6}
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+const {useState, useEffect, useCallback, useRef} = React;
+
+/* ── Constants ─────────────────────────────────────────── */
+const ACCENT  = ["#FF6B6B","#4ECDC4","#F59E0B","#6366F1","#10B981","#F43F5E","#3B82F6","#8B5CF6","#EC4899","#14B8A6"];
+const PALETTE = ["#FF6B6B","#4ECDC4","#F59E0B","#6366F1","#10B981","#F43F5E","#3B82F6","#8B5CF6","#EC4899","#14B8A6","#F97316","#06B6D4"];
+const STATUS  = {
+  todo:       {label:"To Do",       bg:"#64748B22",color:"#94A3B8"},
+  inprogress: {label:"In Progress", bg:"#3B82F622",color:"#60A5FA"},
+  blocked:    {label:"Blocked",     bg:"#EF444422",color:"#F87171"},
+  waiting:    {label:"Waiting",     bg:"#F59E0B22",color:"#FCD34D"},
+  done:       {label:"Done",        bg:"#10B98122",color:"#34D399"},
+};
+const PRI = {
+  low:    {label:"Low",    bg:"#64748B22",color:"#94A3B8"},
+  medium: {label:"Med",   bg:"#3B82F622",color:"#60A5FA"},
+  high:   {label:"High",  bg:"#F59E0B22",color:"#FCD34D"},
+  urgent: {label:"Urgent",bg:"#EF444422",color:"#F87171"},
+};
+
+const uid = () => Math.random().toString(36).slice(2, 10);
+const mkTask = (text, status="todo", priority="medium") => ({id:uid(), text, assignees:[], status, priority, notes:""});
+
+const INIT = {
+  boardName: "HRA Project Board",
+  people: [],
+  columns: [
+    {id:uid(),title:"DRNX",       accent:ACCENT[0],tasks:[mkTask("Check Invoice balance from HRA Accounting","inprogress","high"),mkTask("Ensure DRNX pays","waiting","urgent")]},
+    {id:uid(),title:"S2B",        accent:ACCENT[3],tasks:[mkTask("Figure out amount, lets say 5%","todo","medium")]},
+    {id:uid(),title:"RAB",        accent:ACCENT[5],tasks:[mkTask("Do we need to have another communication effort?","waiting","medium")]},
+    {id:uid(),title:"Zambos",     accent:ACCENT[1],tasks:[mkTask("We need to get Odoo system running","inprogress","high"),mkTask("We need to get Distro agreement","todo","high"),mkTask("Then distro agreement to Parras","todo","medium")]},
+    {id:uid(),title:"Uncle Julio",accent:ACCENT[2],tasks:[]},
+    {id:uid(),title:"Sabritas",   accent:ACCENT[6],tasks:[]},
+    {id:uid(),title:"Jumex",      accent:ACCENT[7],tasks:[]},
+    {id:uid(),title:"Mazuma",     accent:ACCENT[4],tasks:[]},
+  ]
+};
+
+/* ── Setup Guide (shown when config not filled in) ───── */
+function SetupGuide() {
+  return (
+    <div className="center-screen">
+      <div className="setup-box">
+        <h2>🔥 One-time Firebase Setup</h2>
+        <p className="sub">
+          Firebase gives your board real-time sync — every teammate sees changes the instant they happen.
+          The free plan covers up to 100 simultaneous users. Setup takes about 5 minutes.
+        </p>
+        <div className="step">
+          <div className="step-n">1</div>
+          <div className="step-b">
+            <strong>Create a free Firebase project</strong>
+            Go to <a href="https://console.firebase.google.com" target="_blank" rel="noreferrer">console.firebase.google.com</a> → click <em>"Add project"</em> → name it (e.g. <em>hra-kanban</em>) → click through to create.
+          </div>
+        </div>
+        <div className="step">
+          <div className="step-n">2</div>
+          <div className="step-b">
+            <strong>Enable Realtime Database</strong>
+            In your project → Build → <em>Realtime Database</em> → "Create database" → choose a location → select <strong>"Start in test mode"</strong> → Enable.
+          </div>
+        </div>
+        <div className="step">
+          <div className="step-n">3</div>
+          <div className="step-b">
+            <strong>Get your config</strong>
+            Click the ⚙️ gear (Project Settings) → General tab → scroll to <em>"Your apps"</em> → click the <code>&lt;/&gt;</code> web icon → register app → copy the <code>firebaseConfig</code> object shown.
+          </div>
+        </div>
+        <div className="step">
+          <div className="step-n">4</div>
+          <div className="step-b">
+            <strong>Paste config into this file</strong>
+            Open <code>index.html</code> in any text editor → find <code>const firebaseConfig = &#123;</code> near the top → replace all <code>"YOUR_..."</code> values with your real values → save → re-upload to GitHub.
+          </div>
+        </div>
+        <div className="tip">
+          ✅ <strong>Free tier is more than enough</strong> — Firebase Spark plan supports 100 simultaneous connections, 1 GB storage, and 10 GB/month bandwidth at no cost.
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ── Main App ────────────────────────────────────────── */
+function App() {
+  const [board,      setBoard]      = useState(null);
+  const [syncStatus, setSyncStatus] = useState("loading");
+  const [drag,       setDrag]       = useState(null);
+  const [over,       setOver]       = useState(null);
+  const [addCol,     setAddCol]     = useState(null);
+  const [newTxt,     setNewTxt]     = useState("");
+  const [addingCol,  setAddingCol]  = useState(false);
+  const [newColTtl,  setNewColTtl]  = useState("");
+  const [editTask,   setEditTask]   = useState(null);
+  const [showPpl,    setShowPpl]    = useState(false);
+  const [newPerson,  setNewPerson]  = useState("");
+  const [editName,   setEditName]   = useState(false);
+  const [nameInp,    setNameInp]    = useState("");
+
+  // Prevent echo: when we write to Firebase, skip the next inbound event
+  const skipNext = useRef(false);
+
+  /* Check if the config has been filled in */
+  const fb = window._fb;
+  const configured = fb?.ready && !document.querySelector('script[type="module"]')?.textContent?.includes("YOUR_API_KEY");
+
+  useEffect(() => {
+    if (!configured) return;
+    const boardRef = fb.ref(fb.db, "board");
+    const unsub = fb.onValue(boardRef, snap => {
+      if (skipNext.current) { skipNext.current = false; return; }
+      const data = snap.val();
+      if (data) {
+        setBoard(data);
+        setSyncStatus("live");
+      } else {
+        // First run — seed the database with initial data
+        fb.set(boardRef, INIT);
+      }
+    }, err => {
+      console.error(err);
+      setSyncStatus("error");
+      try { const v = localStorage.getItem("hra-kb"); setBoard(v ? JSON.parse(v) : INIT); } catch { setBoard(INIT); }
+    });
+    return unsub;
+  }, [configured]);
+
+  const upd = useCallback(fn => {
+    setBoard(p => {
+      const next = fn(p);
+      // Write to Firebase
+      if (configured && fb?.ready) {
+        skipNext.current = true;
+        fb.set(fb.ref(fb.db, "board"), next).catch(() => { skipNext.current = false; });
+      }
+      // Local backup
+      try { localStorage.setItem("hra-kb", JSON.stringify(next)); } catch {}
+      return next;
+    });
+  }, [configured]);
+
+  if (!configured) return <SetupGuide />;
+  if (!board) return (
+    <div className="center-screen" style={{flexDirection:"column"}}>
+      <div className="spinner" />
+      <span style={{fontSize:13,color:"var(--t3)"}}>Connecting to live board…</span>
+    </div>
+  );
+
+  /* ── Drag & drop ── */
+  const onDS   = (taskId, colId) => setDrag({taskId, colId});
+  const onDO   = (e, colId)      => { e.preventDefault(); setOver(colId); };
+  const onDrop = (e, toId) => {
+    e.preventDefault();
+    if (!drag || drag.colId === toId) { setDrag(null); setOver(null); return; }
+    upd(p => {
+      let moved;
+      const cols = p.columns
+        .map(c => { if (c.id === drag.colId) { moved = c.tasks.find(t => t.id === drag.taskId); return {...c, tasks: c.tasks.filter(t => t.id !== drag.taskId)}; } return c; })
+        .map(c => c.id === toId && moved ? {...c, tasks: [...c.tasks, moved]} : c);
+      return {...p, columns: cols};
+    });
+    setDrag(null); setOver(null);
+  };
+  const onDE = () => { setDrag(null); setOver(null); };
+
+  /* ── CRUD ── */
+  const addTask   = colId  => { if (!newTxt.trim()) return; upd(p => ({...p, columns: p.columns.map(c => c.id === colId ? {...c, tasks: [...c.tasks, mkTask(newTxt.trim())]} : c)})); setNewTxt(""); setAddCol(null); };
+  const delTask   = (ci,ti)=> upd(p => ({...p, columns: p.columns.map(c => c.id === ci ? {...c, tasks: c.tasks.filter(t => t.id !== ti)} : c)}));
+  const addColumn = ()     => { if (!newColTtl.trim()) return; upd(p => ({...p, columns: [...p.columns, {id:uid(), title:newColTtl.trim(), accent:ACCENT[Math.floor(Math.random()*ACCENT.length)], tasks:[]}]})); setNewColTtl(""); setAddingCol(false); };
+  const delColumn = colId  => { if (window.confirm("Delete this column and all its tasks?")) upd(p => ({...p, columns: p.columns.filter(c => c.id !== colId)})); };
+  const saveTask  = ()     => { if (!editTask) return; const {colId,...t} = editTask; upd(p => ({...p, columns: p.columns.map(c => c.id === colId ? {...c, tasks: c.tasks.map(x => x.id === t.id ? t : x)} : c)})); setEditTask(null); };
+  const addPerson = ()     => { if (!newPerson.trim()) return; const used = board.people.map(p => p.color); const avail = PALETTE.filter(c => !used.includes(c)); upd(p => ({...p, people: [...p.people, {id:uid(), name:newPerson.trim(), color: avail[0]||PALETTE[p.people.length%PALETTE.length]}]})); setNewPerson(""); };
+  const delPerson = pid    => upd(p => ({...p, people: p.people.filter(x => x.id !== pid), columns: p.columns.map(c => ({...c, tasks: c.tasks.map(t => ({...t, assignees: t.assignees.filter(a => a !== pid)}))}))}));
+  const toggleA   = pid    => setEditTask(prev => ({...prev, assignees: prev.assignees.includes(pid) ? prev.assignees.filter(a => a !== pid) : [...prev.assignees, pid]}));
+
+  /* ── Render ── */
+  return (
+    <div className="app" onClick={() => showPpl && setShowPpl(false)}>
+
+      {/* Header */}
+      <header className="hdr">
+        <div className="logo">K</div>
+        {editName
+          ? <input className="bname-inp" value={nameInp} autoFocus
+              onChange={e => setNameInp(e.target.value)}
+              onBlur={() => { if (nameInp.trim()) upd(p => ({...p, boardName: nameInp.trim()})); setEditName(false); }}
+              onKeyDown={e => { if (e.key === "Enter") e.target.blur(); if (e.key === "Escape") setEditName(false); }}
+            />
+          : <div className="bname" onClick={() => { setEditName(true); setNameInp(board.boardName); }}>{board.boardName}</div>
+        }
+        <div className="hdr-r">
+          <div className="sync-pill">
+            <div className={`sdot ${syncStatus}`} />
+            <span className="slbl">{syncStatus === "live" ? "live sync" : syncStatus === "loading" ? "connecting" : "offline"}</span>
+          </div>
+          <div className="av-stack">
+            {board.people.slice(0,6).map(p => <div key={p.id} className="av" style={{background:p.color}} title={p.name}>{p.name[0].toUpperCase()}</div>)}
+            {board.people.length > 6 && <div className="av" style={{background:"#334155",color:"#94A3B8"}}>+{board.people.length-6}</div>}
+          </div>
+          <button className="btn btn-g sm" onClick={e => { e.stopPropagation(); setShowPpl(v => !v); }}>👥 Team</button>
+          <button className="btn btn-p sm" onClick={() => setAddingCol(true)}>+ Column</button>
+        </div>
+      </header>
+
+      {/* Board */}
+      <div className="board" onClick={() => showPpl && setShowPpl(false)}>
+        {board.columns.map(col => (
+          <div key={col.id} className={`col${over === col.id ? " over" : ""}`}
+            onDragOver={e => onDO(e, col.id)} onDrop={e => onDrop(e, col.id)}>
+            <div className="col-top">
+              <div className="col-bar" style={{background: col.accent}} />
+              <div className="col-head">
+                <div className="col-ttl">{col.title}</div>
+                <div className="col-cnt">{col.tasks.length}</div>
+                <button className="ico" onClick={() => delColumn(col.id)} style={{opacity:.45}}>×</button>
+              </div>
+            </div>
+            <div className="tasks">
+              {col.tasks.map(t => {
+                const st = STATUS[t.status] || STATUS.todo;
+                const pr = PRI[t.priority]  || PRI.medium;
+                return (
+                  <div key={t.id} className={`card${drag?.taskId === t.id ? " dragging" : ""}`}
+                    draggable onDragStart={() => onDS(t.id, col.id)} onDragEnd={onDE}>
+                    <div className="card-acts">
+                      <button className="ca"     onClick={() => setEditTask({...t, colId: col.id})}>✎</button>
+                      <button className="ca del" onClick={() => delTask(col.id, t.id)}>×</button>
+                    </div>
+                    <div className="card-txt">{t.text}</div>
+                    {t.notes && <div className="card-notes">{t.notes}</div>}
+                    <div className="card-meta">
+                      <span className="badge" style={{background:st.bg, color:st.color}}>{st.label}</span>
+                      <span className="badge" style={{background:pr.bg, color:pr.color}}>{pr.label}</span>
+                      {t.assignees.length > 0 && (
+                        <div className="avs" style={{marginLeft:"auto"}}>
+                          {t.assignees.map(aid => { const p = board.people.find(x => x.id === aid); return p ? <div key={aid} className="mav" style={{background:p.color}} title={p.name}>{p.name[0].toUpperCase()}</div> : null; })}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            <div className="col-foot">
+              {addCol === col.id
+                ? <div className="add-form">
+                    <textarea className="inp" rows={2} placeholder="Task description…" value={newTxt} autoFocus
+                      onChange={e => setNewTxt(e.target.value)}
+                      onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); addTask(col.id); } if (e.key === "Escape") { setAddCol(null); setNewTxt(""); } }}
+                    />
+                    <div className="row">
+                      <button className="btn btn-p sm" style={{flex:1,justifyContent:"center"}} onClick={() => addTask(col.id)}>Add Task</button>
+                      <button className="btn btn-g sm" onClick={() => { setAddCol(null); setNewTxt(""); }}>✕</button>
+                    </div>
+                  </div>
+                : <button className="btn btn-g sm" style={{width:"100%",justifyContent:"center"}} onClick={() => setAddCol(col.id)}>+ Add task</button>
+              }
+            </div>
+          </div>
+        ))}
+        <div className="add-col-wrap">
+          {addingCol
+            ? <div className="add-col-form">
+                <span style={{fontSize:12,fontWeight:800,color:"var(--t2)"}}>New Column</span>
+                <input className="inp" placeholder="Column name…" value={newColTtl} autoFocus
+                  onChange={e => setNewColTtl(e.target.value)}
+                  onKeyDown={e => { if (e.key === "Enter") addColumn(); if (e.key === "Escape") { setAddingCol(false); setNewColTtl(""); } }}
+                />
+                <div className="row">
+                  <button className="btn btn-p sm" style={{flex:1,justifyContent:"center"}} onClick={addColumn}>Create</button>
+                  <button className="btn btn-g sm" onClick={() => { setAddingCol(false); setNewColTtl(""); }}>✕</button>
+                </div>
+              </div>
+            : <button className="add-col-btn" onClick={() => setAddingCol(true)}><span style={{fontSize:18,fontWeight:300}}>+</span> Add column</button>
+          }
+        </div>
+      </div>
+
+      {/* Team panel */}
+      {showPpl && (
+        <div className="panel" onClick={e => e.stopPropagation()}>
+          <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:14}}>
+            <h3>Team Members</h3>
+            <button className="ico" onClick={() => setShowPpl(false)} style={{fontSize:18}}>×</button>
+          </div>
+          {board.people.length === 0 && <p style={{fontSize:12,color:"var(--t3)",marginBottom:12}}>No team members yet.</p>}
+          {board.people.map(p => (
+            <div key={p.id} className="prow">
+              <div style={{width:18,height:18,borderRadius:"50%",background:p.color,flexShrink:0}} />
+              <div className="av" style={{background:p.color,margin:0,width:26,height:26,fontSize:10}}>{p.name[0].toUpperCase()}</div>
+              <span style={{fontSize:13,fontWeight:700,flex:1}}>{p.name}</span>
+              <button className="btn btn-d sm" onClick={() => delPerson(p.id)}>Remove</button>
+            </div>
+          ))}
+          <div style={{marginTop:20,paddingTop:14,borderTop:"1px solid var(--b1)"}}>
+            <span className="lbl">Add Person</span>
+            <div className="row">
+              <input className="inp" placeholder="Name…" value={newPerson} style={{flex:1}}
+                onChange={e => setNewPerson(e.target.value)}
+                onKeyDown={e => { if (e.key === "Enter") addPerson(); }}
+              />
+              <button className="btn btn-p" onClick={addPerson}>Add</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit task modal */}
+      {editTask && (
+        <div className="overlay" onClick={() => setEditTask(null)}>
+          <div className="modal" onClick={e => e.stopPropagation()}>
+            <h2>Edit Task</h2>
+            <div className="frow">
+              <span className="lbl">Description</span>
+              <textarea className="inp" rows={3} value={editTask.text} onChange={e => setEditTask(p => ({...p, text: e.target.value}))} />
+            </div>
+            <div className="g2">
+              <div className="frow">
+                <span className="lbl">Status</span>
+                <select className="sel" value={editTask.status} onChange={e => setEditTask(p => ({...p, status: e.target.value}))}>
+                  {Object.entries(STATUS).map(([v,{label}]) => <option key={v} value={v}>{label}</option>)}
+                </select>
+              </div>
+              <div className="frow">
+                <span className="lbl">Priority</span>
+                <select className="sel" value={editTask.priority} onChange={e => setEditTask(p => ({...p, priority: e.target.value}))}>
+                  {Object.entries(PRI).map(([v,{label}]) => <option key={v} value={v}>{label}</option>)}
+                </select>
+              </div>
+            </div>
+            <div className="frow">
+              <span className="lbl">Notes</span>
+              <textarea className="inp" rows={2} placeholder="Optional notes…" value={editTask.notes||""} onChange={e => setEditTask(p => ({...p, notes: e.target.value}))} />
+            </div>
+            {board.people.length > 0 && (
+              <div className="frow">
+                <span className="lbl">Assign To</span>
+                <div className="chips">
+                  {board.people.map(p => {
+                    const on = editTask.assignees.includes(p.id);
+                    return (
+                      <div key={p.id} className={`chip${on?" on":""}`} style={{color:p.color, borderColor:on?p.color:"transparent"}} onClick={() => toggleA(p.id)}>
+                        <div className="chip-dot" style={{background:p.color}} />{p.name}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+            <div className="mfoot">
+              <button className="btn btn-g" onClick={() => setEditTask(null)}>Cancel</button>
+              <button className="btn btn-p" onClick={saveTask}>Save Changes</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+</script>
+</body>
+</html>
