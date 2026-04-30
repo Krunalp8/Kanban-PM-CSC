@@ -23,7 +23,8 @@ html,body,#root{height:100%;background:var(--bg);color:var(--t1);font-family:var
 .sync-pill{display:flex;align-items:center;gap:6px;padding:4px 10px;border-radius:20px;background:var(--s2);border:1px solid var(--b1)}
 .sdot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
 .sdot.live{background:#34D399;animation:pulse 2s infinite}
-.sdot.loading{background:#FCD34D}.sdot.err{background:#F87171}
+.sdot.syncing{background:#FCD34D}
+.sdot.err{background:#F87171}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
 .slbl{font-size:10px;font-weight:700;font-family:var(--mono);color:var(--t3)}
 .btn{display:flex;align-items:center;gap:5px;padding:7px 13px;border-radius:8px;border:none;cursor:pointer;font-family:var(--font);font-size:12px;font-weight:700;transition:all .13s}
@@ -88,19 +89,17 @@ html,body,#root{height:100%;background:var(--bg);color:var(--t1);font-family:var
 .panel h3{font-size:14px;font-weight:800;margin-bottom:14px}
 .prow{display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:1px solid var(--b1)}
 .prow:last-of-type{border-bottom:none}
-.loading-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;gap:14px;background:var(--bg)}
-.spinner{width:30px;height:30px;border:3px solid var(--b2);border-top-color:#3B82F6;border-radius:50%;animation:spin .7s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
+/* Setup screen */
 .setup-wrap{min-height:100vh;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:24px}
-.setup-card{background:var(--s1);border:1px solid var(--b2);border-radius:20px;padding:32px;width:580px;max-width:100%;box-shadow:0 40px 80px rgba(0,0,0,.6)}
-.setup-card h1{font-size:20px;font-weight:800;margin-bottom:8px;letter-spacing:-.4px}
+.setup-card{background:var(--s1);border:1px solid var(--b2);border-radius:20px;padding:32px;width:580px;max-width:100%}
+.setup-card h1{font-size:20px;font-weight:800;margin-bottom:8px}
 .setup-sub{font-size:13px;color:var(--t2);line-height:1.7;margin-bottom:22px}
 .steps{display:flex;flex-direction:column;gap:9px;margin-bottom:22px}
 .step{display:flex;gap:12px;padding:12px 14px;background:var(--s2);border-radius:10px;border:1px solid var(--b1)}
 .step-n{width:22px;height:22px;border-radius:50%;background:#3B82F6;color:#fff;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
 .step-b{font-size:12.5px;color:var(--t2);line-height:1.6}
 .step-b strong{color:var(--t1);display:block;margin-bottom:2px}
-.step-b a{color:#60A5FA;font-weight:700;text-decoration:none}.step-b a:hover{text-decoration:underline}
+.step-b a{color:#60A5FA;font-weight:700;text-decoration:none}
 .step-b code{font-family:var(--mono);font-size:11px;background:rgba(59,130,246,.12);padding:1px 5px;border-radius:4px;color:#93C5FD}
 .divider{border:none;border-top:1px solid var(--b1);margin:20px 0}
 .paste-label{font-size:14px;font-weight:800;color:var(--t1);margin-bottom:4px}
@@ -153,38 +152,33 @@ const INIT = {
   ]
 };
 
-const CFG_KEY = "hra-fb-cfg-v2";
+const CFG_KEY  = "hra-fb-cfg-v2";
+const DATA_KEY = "hra-kb-data";
 
-function getSaved() {
-  try { const v = localStorage.getItem(CFG_KEY); return v ? JSON.parse(v) : null; } catch { return null; }
-}
-function saveCfg(cfg) {
-  try { localStorage.setItem(CFG_KEY, JSON.stringify(cfg)); } catch {}
-}
-function clearCfg() {
-  try { localStorage.removeItem(CFG_KEY); } catch {}
-}
+const getSaved    = () => { try { const v=localStorage.getItem(CFG_KEY);  return v?JSON.parse(v):null; } catch { return null; } };
+const getLocalData= () => { try { const v=localStorage.getItem(DATA_KEY); return v?JSON.parse(v):null; } catch { return null; } };
+const saveCfg     = c  => { try { localStorage.setItem(CFG_KEY,  JSON.stringify(c)); } catch {} };
+const saveLocal   = d  => { try { localStorage.setItem(DATA_KEY, JSON.stringify(d)); } catch {} };
+const clearCfg    = () => { try { localStorage.removeItem(CFG_KEY); } catch {} };
 
 function parseConfig(raw) {
   const cfg = {};
   ["apiKey","authDomain","databaseURL","projectId","storageBucket","messagingSenderId","appId"].forEach(k => {
-    const m = raw.match(new RegExp(k + '\\s*:\\s*["\`\'](.*?)["\`\']'));
+    const m = raw.match(new RegExp(k+'\\s*:\\s*["\`\'](.*?)["\`\']'));
     if (m) cfg[k] = m[1];
   });
   return cfg;
 }
 
-function initFirebase(cfg) {
-  try {
-    // Clean up existing apps
-    firebase.apps.forEach(a => a.delete().catch(()=>{}));
-  } catch(e) {}
-  const app = firebase.initializeApp(cfg);
-  const db  = firebase.database();
-  return db;
+function startFirebase(cfg) {
+  try { firebase.apps.forEach(a => a.delete().catch(()=>{})); } catch(e) {}
+  firebase.initializeApp(cfg);
+  return firebase.database();
 }
 
-/* ── Setup Screen ────────────────────────────────────── */
+/* ─────────────────────────────────────────
+   Setup Screen
+───────────────────────────────────────── */
 function SetupScreen({onConnect}) {
   const [paste,   setPaste]   = useState("");
   const [loading, setLoading] = useState(false);
@@ -193,36 +187,15 @@ function SetupScreen({onConnect}) {
   const connect = () => {
     setErr(""); setLoading(true);
     const cfg = parseConfig(paste);
-
-    if (!cfg.apiKey || !cfg.projectId) {
-      setErr("Could not find apiKey or projectId — make sure you pasted the full firebaseConfig block.");
-      setLoading(false); return;
-    }
-    if (!cfg.databaseURL) {
-      setErr("Could not find databaseURL. It should look like: https://your-project-default-rtdb.firebaseio.com");
-      setLoading(false); return;
-    }
-
+    if (!cfg.apiKey)      { setErr("Could not find apiKey — paste the full firebaseConfig block.");           setLoading(false); return; }
+    if (!cfg.databaseURL) { setErr("Could not find databaseURL — it looks like: https://your-app-default-rtdb.firebaseio.com"); setLoading(false); return; }
     try {
-      const db = initFirebase(cfg);
-      // Test connection
-      db.ref(".info/connected").on("value", snap => {
-        if (snap.val() === true) {
-          saveCfg(cfg);
-          window._firebaseDb = db;
-          setLoading(false);
-          onConnect();
-        }
-      });
-      // Timeout after 8s
-      setTimeout(() => {
-        if (loading) {
-          setErr("Connection timed out. Check your databaseURL and make sure Realtime Database is set to test mode.");
-          setLoading(false);
-        }
-      }, 8000);
+      const db = startFirebase(cfg);
+      saveCfg(cfg);
+      window._db = db;
+      onConnect();
     } catch(e) {
-      setErr("Error: " + (e.message || "Could not connect. Check your config."));
+      setErr("Error: " + (e.message || "Could not initialise Firebase. Check your config."));
       setLoading(false);
     }
   };
@@ -231,69 +204,37 @@ function SetupScreen({onConnect}) {
     <div className="setup-wrap">
       <div className="setup-card">
         <h1>🔥 Connect Firebase for Live Sync</h1>
-        <p className="setup-sub">One-time setup — paste your Firebase config below and click Connect. Everyone on your team visits the same URL, pastes the same config once, and you all sync live.</p>
-
+        <p className="setup-sub">One-time setup — paste your Firebase config and click Connect. Everyone on your team visits the same URL, pastes the same config once, and you all see changes live.</p>
         <div className="steps">
-          <div className="step">
-            <div className="step-n">1</div>
-            <div className="step-b">
-              <strong>Create a free Firebase project</strong>
-              Go to <a href="https://console.firebase.google.com" target="_blank">console.firebase.google.com</a> → "Add project" → name it (e.g. hra-kanban) → click through to create.
-            </div>
-          </div>
-          <div className="step">
-            <div className="step-n">2</div>
-            <div className="step-b">
-              <strong>Enable Realtime Database</strong>
-              Build → Realtime Database → "Create database" → any location → select <strong>"Start in test mode"</strong> → Enable.
-            </div>
-          </div>
-          <div className="step">
-            <div className="step-n">3</div>
-            <div className="step-b">
-              <strong>Get your config</strong>
-              ⚙️ gear icon → Project Settings → General → scroll to "Your apps" → click the <code>&lt;/&gt;</code> web icon → Register app → copy the <code>firebaseConfig</code> block.
-            </div>
-          </div>
-          <div className="step">
-            <div className="step-n">4</div>
-            <div className="step-b">
-              <strong>Paste it in the box below and click Connect</strong>
-              No file editing needed — your config is saved in your browser.
-            </div>
-          </div>
+          <div className="step"><div className="step-n">1</div><div className="step-b"><strong>Create a free Firebase project</strong>Go to <a href="https://console.firebase.google.com" target="_blank">console.firebase.google.com</a> → "Add project" → name it → click through.</div></div>
+          <div className="step"><div className="step-n">2</div><div className="step-b"><strong>Enable Realtime Database</strong>Build → Realtime Database → Create database → any location → <strong>Start in test mode</strong> → Enable.</div></div>
+          <div className="step"><div className="step-n">3</div><div className="step-b"><strong>Copy your config</strong>⚙️ gear → Project Settings → scroll to "Your apps" → <code>&lt;/&gt;</code> web icon → Register app → copy the <code>firebaseConfig</code> block.</div></div>
+          <div className="step"><div className="step-n">4</div><div className="step-b"><strong>Paste below and click Connect</strong>Your config is saved in your browser — no file editing needed.</div></div>
         </div>
-
         <hr className="divider"/>
-
         <div className="paste-label">Paste your Firebase config here</div>
-        <div className="paste-hint">Copy the entire firebaseConfig block from Firebase (curly braces and all) and paste it below.</div>
-
-        <textarea
-          className="paste-box"
+        <div className="paste-hint">Copy the entire firebaseConfig block from Firebase and paste it below — curly braces and all.</div>
+        <textarea className="paste-box"
           placeholder={"const firebaseConfig = {\n  apiKey: \"AIza...\",\n  authDomain: \"your-app.firebaseapp.com\",\n  databaseURL: \"https://your-app-default-rtdb.firebaseio.com\",\n  projectId: \"your-app\",\n  storageBucket: \"your-app.appspot.com\",\n  messagingSenderId: \"123456789\",\n  appId: \"1:123...\"\n};"}
-          value={paste}
-          onChange={e => setPaste(e.target.value)}
+          value={paste} onChange={e=>setPaste(e.target.value)}
         />
-
         {err && <div className="err-box">⚠️ {err}</div>}
-
-        <button className="connect-btn" disabled={loading || !paste.trim()} onClick={connect}>
+        <button className="connect-btn" disabled={loading||!paste.trim()} onClick={connect}>
           {loading ? "Connecting…" : "Connect & Open Board →"}
         </button>
-
-        <div className="tip-box">
-          ✅ <strong>Free tier is plenty</strong> — Firebase Spark plan: 100 simultaneous users, 1 GB storage, no credit card needed.
-        </div>
+        <div className="tip-box">✅ Firebase Spark (free) plan: 100 simultaneous users, 1 GB storage, no credit card needed.</div>
       </div>
     </div>
   );
 }
 
-/* ── Board ───────────────────────────────────────────── */
+/* ─────────────────────────────────────────
+   Board
+───────────────────────────────────────── */
 function Board() {
-  const [board,      setBoard]     = useState(null);
-  const [syncStatus, setSyncStatus]= useState("loading");
+  // Load local data immediately so board never shows blank
+  const [board,      setBoard]     = useState(() => getLocalData() || INIT);
+  const [syncStatus, setSyncStatus]= useState("syncing");
   const [drag,       setDrag]      = useState(null);
   const [over,       setOver]      = useState(null);
   const [addCol,     setAddCol]    = useState(null);
@@ -308,37 +249,37 @@ function Board() {
   const skipNext = useRef(false);
 
   useEffect(() => {
-    const db = window._firebaseDb;
-    if (!db) return;
-    const boardRef = db.ref("board");
-    boardRef.on("value", snap => {
+    const db = window._db;
+    if (!db) { setSyncStatus("err"); return; }
+    const ref = db.ref("board");
+    ref.on("value", snap => {
       if (skipNext.current) { skipNext.current = false; return; }
       const data = snap.val();
-      if (data) { setBoard(data); setSyncStatus("live"); }
-      else { boardRef.set(INIT); }
-    }, () => {
-      setSyncStatus("error");
-      try { const v = localStorage.getItem("hra-kb"); setBoard(v ? JSON.parse(v) : INIT); } catch { setBoard(INIT); }
-    });
-    return () => boardRef.off();
+      if (data) {
+        setBoard(data);
+        saveLocal(data);
+        setSyncStatus("live");
+      } else {
+        // First ever load — write INIT to Firebase
+        const starter = getLocalData() || INIT;
+        ref.set(starter);
+      }
+    }, () => setSyncStatus("err"));
+    return () => ref.off();
   }, []);
 
   const upd = useCallback(fn => {
     setBoard(p => {
       const next = fn(p);
-      const db = window._firebaseDb;
-      if (db) { skipNext.current = true; db.ref("board").set(next).catch(() => { skipNext.current = false; }); }
-      try { localStorage.setItem("hra-kb", JSON.stringify(next)); } catch {}
+      saveLocal(next);
+      const db = window._db;
+      if (db) {
+        skipNext.current = true;
+        db.ref("board").set(next).catch(() => { skipNext.current = false; });
+      }
       return next;
     });
   }, []);
-
-  if (!board) return (
-    <div className="loading-screen">
-      <div className="spinner"/>
-      <span style={{fontSize:13,color:"var(--t3)"}}>Connecting to live board…</span>
-    </div>
-  );
 
   const onDS   = (ti,ci) => setDrag({taskId:ti,colId:ci});
   const onDO   = (e,ci)  => { e.preventDefault(); setOver(ci); };
@@ -350,14 +291,14 @@ function Board() {
       const cols = p.columns
         .map(c => { if(c.id===drag.colId){moved=c.tasks.find(t=>t.id===drag.taskId);return{...c,tasks:c.tasks.filter(t=>t.id!==drag.taskId)};} return c; })
         .map(c => c.id===toId&&moved ? {...c,tasks:[...c.tasks,moved]} : c);
-      return {...p, columns:cols};
+      return {...p,columns:cols};
     });
     setDrag(null); setOver(null);
   };
   const onDE = () => { setDrag(null); setOver(null); };
 
   const addTask   = ci  => { if(!newTxt.trim())return; upd(p=>({...p,columns:p.columns.map(c=>c.id===ci?{...c,tasks:[...c.tasks,mkTask(newTxt.trim())]}:c)})); setNewTxt(""); setAddCol(null); };
-  const delTask   = (ci,ti) => upd(p=>({...p,columns:p.columns.map(c=>c.id===ci?{...c,tasks:c.tasks.filter(t=>t.id!==ti)}:c)}));
+  const delTask   =(ci,ti)=> upd(p=>({...p,columns:p.columns.map(c=>c.id===ci?{...c,tasks:c.tasks.filter(t=>t.id!==ti)}:c)}));
   const addColumn = () => { if(!newColTtl.trim())return; upd(p=>({...p,columns:[...p.columns,{id:uid(),title:newColTtl.trim(),accent:ACCENT[Math.floor(Math.random()*ACCENT.length)],tasks:[]}]})); setNewColTtl(""); setAddingCol(false); };
   const delColumn = ci  => { if(window.confirm("Delete this column and all its tasks?")) upd(p=>({...p,columns:p.columns.filter(c=>c.id!==ci)})); };
   const saveTask  = ()  => { if(!editTask)return; const{colId,...t}=editTask; upd(p=>({...p,columns:p.columns.map(c=>c.id===colId?{...c,tasks:c.tasks.map(x=>x.id===t.id?t:x)}:c)})); setEditTask(null); };
@@ -370,19 +311,19 @@ function Board() {
       <header className="hdr">
         <div className="logo">K</div>
         {editName
-          ? <input className="bname-inp" value={nameInp} autoFocus
+          ?<input className="bname-inp" value={nameInp} autoFocus
               onChange={e=>setNameInp(e.target.value)}
               onBlur={()=>{if(nameInp.trim())upd(p=>({...p,boardName:nameInp.trim()}));setEditName(false);}}
               onKeyDown={e=>{if(e.key==="Enter")e.target.blur();if(e.key==="Escape")setEditName(false);}}
             />
-          : <div className="bname" onClick={()=>{setEditName(true);setNameInp(board.boardName);}}>{board.boardName}</div>
+          :<div className="bname" onClick={()=>{setEditName(true);setNameInp(board.boardName);}}>{board.boardName}</div>
         }
         <div className="hdr-r">
           <div className="sync-pill">
             <div className={`sdot ${syncStatus}`}/>
-            <span className="slbl">{syncStatus==="live"?"live sync":syncStatus==="loading"?"connecting":"offline"}</span>
+            <span className="slbl">{syncStatus==="live"?"live sync":syncStatus==="syncing"?"syncing…":"offline"}</span>
           </div>
-          <button className="btn btn-g sm" onClick={()=>{if(window.confirm("Reset Firebase connection? You will need to paste your config again.")){{clearCfg();window.location.reload();}}}}>⚙ Reconnect</button>
+          <button className="btn btn-g sm" onClick={()=>{if(window.confirm("Reset Firebase connection?")){{clearCfg();window.location.reload();}}}}>⚙ Reconnect</button>
           <div className="av-stack">
             {board.people.slice(0,6).map(p=><div key={p.id} className="av" style={{background:p.color}} title={p.name}>{p.name[0].toUpperCase()}</div>)}
             {board.people.length>6&&<div className="av" style={{background:"#334155",color:"#94A3B8"}}>+{board.people.length-6}</div>}
@@ -497,40 +438,16 @@ function Board() {
         <div className="overlay" onClick={()=>setEditTask(null)}>
           <div className="modal" onClick={e=>e.stopPropagation()}>
             <h2>Edit Task</h2>
-            <div className="frow">
-              <span className="lbl">Description</span>
-              <textarea className="inp" rows={3} value={editTask.text} onChange={e=>setEditTask(p=>({...p,text:e.target.value}))}/>
-            </div>
+            <div className="frow"><span className="lbl">Description</span><textarea className="inp" rows={3} value={editTask.text} onChange={e=>setEditTask(p=>({...p,text:e.target.value}))}/></div>
             <div className="g2">
-              <div className="frow">
-                <span className="lbl">Status</span>
-                <select className="sel" value={editTask.status} onChange={e=>setEditTask(p=>({...p,status:e.target.value}))}>
-                  {Object.entries(STATUS).map(([v,{label}])=><option key={v} value={v}>{label}</option>)}
-                </select>
-              </div>
-              <div className="frow">
-                <span className="lbl">Priority</span>
-                <select className="sel" value={editTask.priority} onChange={e=>setEditTask(p=>({...p,priority:e.target.value}))}>
-                  {Object.entries(PRI).map(([v,{label}])=><option key={v} value={v}>{label}</option>)}
-                </select>
-              </div>
+              <div className="frow"><span className="lbl">Status</span><select className="sel" value={editTask.status} onChange={e=>setEditTask(p=>({...p,status:e.target.value}))}>{Object.entries(STATUS).map(([v,{label}])=><option key={v} value={v}>{label}</option>)}</select></div>
+              <div className="frow"><span className="lbl">Priority</span><select className="sel" value={editTask.priority} onChange={e=>setEditTask(p=>({...p,priority:e.target.value}))}>{Object.entries(PRI).map(([v,{label}])=><option key={v} value={v}>{label}</option>)}</select></div>
             </div>
-            <div className="frow">
-              <span className="lbl">Notes</span>
-              <textarea className="inp" rows={2} placeholder="Optional notes…" value={editTask.notes||""} onChange={e=>setEditTask(p=>({...p,notes:e.target.value}))}/>
-            </div>
+            <div className="frow"><span className="lbl">Notes</span><textarea className="inp" rows={2} placeholder="Optional notes…" value={editTask.notes||""} onChange={e=>setEditTask(p=>({...p,notes:e.target.value}))}/></div>
             {board.people.length>0&&(
-              <div className="frow">
-                <span className="lbl">Assign To</span>
+              <div className="frow"><span className="lbl">Assign To</span>
                 <div className="chips">
-                  {board.people.map(p=>{
-                    const on=editTask.assignees.includes(p.id);
-                    return(
-                      <div key={p.id} className={`chip${on?" on":""}`} style={{color:p.color,borderColor:on?p.color:"transparent"}} onClick={()=>toggleA(p.id)}>
-                        <div className="chip-dot" style={{background:p.color}}/>{p.name}
-                      </div>
-                    );
-                  })}
+                  {board.people.map(p=>{const on=editTask.assignees.includes(p.id);return(<div key={p.id} className={`chip${on?" on":""}`} style={{color:p.color,borderColor:on?p.color:"transparent"}} onClick={()=>toggleA(p.id)}><div className="chip-dot" style={{background:p.color}}/>{p.name}</div>);})}
                 </div>
               </div>
             )}
@@ -545,32 +462,26 @@ function Board() {
   );
 }
 
-/* ── Root ────────────────────────────────────────────── */
+/* ─────────────────────────────────────────
+   Root
+───────────────────────────────────────── */
 function Root() {
-  const [connected, setConnected] = useState(false);
-  const [checking,  setChecking]  = useState(true);
+  const [screen, setScreen] = useState("checking");
 
   useEffect(()=>{
     const cfg = getSaved();
-    if (!cfg) { setChecking(false); return; }
+    if (!cfg) { setScreen("setup"); return; }
     try {
-      const db = initFirebase(cfg);
-      window._firebaseDb = db;
-      setConnected(true);
+      window._db = startFirebase(cfg);
+      setScreen("board");
     } catch(e) {
       clearCfg();
+      setScreen("setup");
     }
-    setChecking(false);
   },[]);
 
-  if (checking) return (
-    <div className="loading-screen">
-      <div className="spinner"/>
-      <span style={{fontSize:13,color:"var(--t3)"}}>Loading…</span>
-    </div>
-  );
-
-  if (!connected) return <SetupScreen onConnect={()=>setConnected(true)}/>;
+  if (screen==="checking") return null;
+  if (screen==="setup")    return <SetupScreen onConnect={()=>setScreen("board")}/>;
   return <Board/>;
 }
 
